@@ -1,0 +1,684 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SafariCostCalculator from "../../components/SafariCostCalculator.astro";
+import DriverFareCalculator from "../../components/DriverFareCalculator.astro";
+import { guidesData, type GuideData } from "../../data/guidesData";
+
+export function getStaticPaths() {
+  return guidesData.map((guide) => ({
+    params: { slug: guide.slug },
+    props: { guide, allGuides: guidesData },
+  }));
+}
+
+interface Props {
+  guide: GuideData;
+  allGuides: GuideData[];
+}
+
+const { guide, allGuides } = Astro.props;
+
+const relatedGuides = allGuides.filter((g) => g.slug !== guide.slug).slice(0, 3);
+
+function formatGuideContent(raw: string): string {
+  return raw
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:var(--accent-amber);text-decoration:underline;font-weight:600;">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+}
+---
+
+<BaseLayout
+  title={`${guide.title} (2026) | LankaWayfinder`}
+  description={guide.summary}
+  currentPath={`/travel-guide/${guide.slug}/`}
+  ogImage={guide.image}
+  ogType="article"
+>
+  <!-- Schema.org JSON-LD Graph: Breadcrumbs, Article, and FAQPage -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://lankawayfinder.tours/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Travel Guides",
+            "item": "https://lankawayfinder.tours/travel-guide/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": guide.title,
+            "item": `https://lankawayfinder.tours/travel-guide/${guide.slug}/`
+          }
+        ]
+      },
+      {
+        "@type": "Article",
+        "headline": guide.title,
+        "description": guide.summary,
+        "image": guide.image,
+        "datePublished": guide.publishedDate,
+        "dateModified": guide.updatedDate,
+        "author": {
+          "@type": "Organization",
+          "name": "LankaWayfinder Route Intelligence & Dispatch Desk",
+          "url": "https://lankawayfinder.tours/"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "LankaWayfinder",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://lankawayfinder.tours/favicon.svg"
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": `https://lankawayfinder.tours/travel-guide/${guide.slug}/`
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": guide.faqs.map((faq) => ({
+          "@type": "Question",
+          "name": faq.q,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.a
+          }
+        }))
+      }
+    ]
+  })} />
+
+  <!-- Guide Header / Hero -->
+  <header class="guide-hero">
+    <div class="container">
+      <nav class="guide-breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href="/travel-guide/">Travel Guides</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{guide.category}</span>
+      </nav>
+
+      <div class="guide-hero__meta">
+        <span class="guide-pill">{guide.category}</span>
+        <span class="guide-readtime">{guide.readTime}</span>
+        <span class="guide-updated">Updated {guide.updatedDate}</span>
+      </div>
+
+      <h1 class="guide-hero__title">{guide.title}</h1>
+      <p class="guide-hero__lead">{guide.headline}</p>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="section" style="padding-top:2rem;">
+    <div class="container guide-layout">
+      <!-- Article Body -->
+      <article class="guide-article">
+        <!-- Verified Traveler Evidence Callout -->
+        <div class="evidence-box">
+          <div class="evidence-box__header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+            <strong>Verified Community Friction &amp; Evidence</strong>
+          </div>
+          <blockquote class="evidence-box__quote">
+            &ldquo;{guide.verifiedProof.quote}&rdquo;
+          </blockquote>
+          <div class="evidence-box__footer">
+            <span>Reported via: <strong>{guide.verifiedProof.sourceLabel}</strong></span>
+            <a
+              href={guide.verifiedProof.threadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="evidence-box__link"
+            >
+              <span>View Source Thread</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Official Baseline Matrix -->
+        <section class="baseline-section">
+          <h2 class="baseline-section__title">Official Public Tariffs &amp; Regulatory Standards</h2>
+          <div class="baseline-grid">
+            {guide.officialBaseline.map((item) => (
+              <div class="baseline-card">
+                <span class="baseline-card__label">{item.label}</span>
+                <strong class="baseline-card__value">{item.value}</strong>
+                <p class="baseline-card__detail">{item.detail}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Key Takeaways Box -->
+        <section class="takeaways-box">
+          <h3 class="takeaways-box__title">Key Tactical Takeaways</h3>
+          <ul class="takeaways-box__list">
+            {guide.keyTakeaways.map((point) => (
+              <li>{point}</li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- Embedded Interactive Calculator (if applicable) -->
+        {guide.calculator === "safari" && (
+          <section style="margin:2.5rem 0;">
+            <SafariCostCalculator />
+          </section>
+        )}
+
+        {guide.calculator === "driver" && (
+          <section style="margin:2.5rem 0;">
+            <DriverFareCalculator />
+          </section>
+        )}
+
+        <!-- Guide Editorial Sections -->
+        {guide.sections.map((sec) => (
+          <section id={sec.id} class="guide-sec">
+            <h2>{sec.title}</h2>
+            <div class="guide-sec__content" style="white-space:pre-line;" set:html={formatGuideContent(sec.content)} />
+          </section>
+        ))}
+
+        <!-- Primary High-Conversion Affiliate CTA -->
+        <div class="action-cta-card">
+          <div class="action-cta-card__badge">{guide.affiliateCta.badge || "Verified Route Partner"}</div>
+          <h3 class="action-cta-card__title">{guide.affiliateCta.title}</h3>
+          <p class="action-cta-card__desc">{guide.affiliateCta.description}</p>
+          <a
+            href={guide.affiliateCta.url}
+            target={guide.affiliateCta.url.startsWith("http") ? "_blank" : "_self"}
+            rel={guide.affiliateCta.url.startsWith("http") ? "noopener noreferrer" : undefined}
+            class="btn btn--primary"
+            style="font-size:1.05rem;padding:0.9rem 1.75rem;"
+          >
+            <span>{guide.affiliateCta.buttonText}</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+
+        <!-- FAQ Section with Semantic Details/Summary for Accessibility -->
+        <section class="guide-faq-sec">
+          <span class="section-pill">Clear Answers</span>
+          <h2>Frequently Asked Questions</h2>
+          <div class="faq-accordion-group">
+            {guide.faqs.map((faq, i) => (
+              <details class="faq-accordion" open={i === 0}>
+                <summary class="faq-accordion__summary">
+                  <span class="faq-accordion__q">{faq.q}</span>
+                  <span class="faq-accordion__icon" aria-hidden="true">+</span>
+                </summary>
+                <div class="faq-accordion__body">
+                  <p>{faq.a}</p>
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+      </article>
+
+      <!-- Sidebar / Quick Actions -->
+      <aside class="guide-sidebar">
+        <!-- Quick Booking Card -->
+        <div class="sidebar-card sidebar-card--accent">
+          <span class="sidebar-card__pill">Direct Dispatch</span>
+          <h4>Need Itinerary Assistance?</h4>
+          <p>
+            Connect directly with LankaWayfinder's transport coordinators for zero-commission private drivers, airport meet-and-greets, and safari connections.
+          </p>
+          {guide.slug === "colombo-airport-transfers-scam-free" ? (
+            <a
+              href="https://www.lankawayfinder.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn--secondary"
+              style="width:100%;justify-content:center;"
+            >
+              <span>Book on LankaWayfinder.com &rarr;</span>
+            </a>
+          ) : (
+            <a href="/contact/" class="btn btn--secondary" style="width:100%;justify-content:center;">
+              <span>Contact Dispatch Desk &rarr;</span>
+            </a>
+          )}
+        </div>
+
+        <!-- Related Guides -->
+        <div class="sidebar-card">
+          <h4 style="font-size:1.1rem;margin-bottom:1rem;">Related Route Guides</h4>
+          <div class="sidebar-links">
+            {relatedGuides.map((rg) => (
+              <a href={`/travel-guide/${rg.slug}/`} class="sidebar-link-item">
+                <span class="sidebar-link-item__cat">{rg.category}</span>
+                <strong class="sidebar-link-item__title">{rg.title}</strong>
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .guide-hero {
+    background: var(--bg-surface-raised);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: clamp(3rem, 5vw, 4.5rem) 0 clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .guide-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .guide-breadcrumbs a {
+    color: var(--ink-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .guide-breadcrumbs a:hover {
+    color: var(--ink-primary);
+  }
+
+  .guide-hero__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .guide-pill {
+    background: #FFFFFF;
+    color: var(--ink-primary);
+    font-weight: 700;
+    font-size: 0.8125rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-light);
+  }
+
+  .guide-readtime {
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+
+  .guide-updated {
+    color: var(--ink-soft);
+  }
+
+  .guide-hero__title {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    max-width: 950px;
+    margin-bottom: 1rem;
+  }
+
+  .guide-hero__lead {
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    color: var(--ink-muted);
+    max-width: 860px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .guide-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  @media (max-width: 960px) {
+    .guide-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .guide-article {
+    min-width: 0;
+  }
+
+  /* Verified Evidence Box */
+  .evidence-box {
+    background: #FFF9F0;
+    border: 1.5px solid rgba(220, 139, 25, 0.35);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+    margin-bottom: 2.5rem;
+  }
+
+  .evidence-box__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #9C5803;
+    font-size: 0.9375rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .evidence-box__quote {
+    font-family: var(--font-serif);
+    font-size: clamp(1.05rem, 1.2vw, 1.2rem);
+    font-style: italic;
+    color: var(--ink-primary);
+    line-height: 1.55;
+    margin: 0 0 1rem 0;
+    padding-left: 1rem;
+    border-left: 3px solid var(--accent-amber);
+  }
+
+  .evidence-box__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.84rem;
+    color: var(--ink-muted);
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(220, 139, 25, 0.2);
+  }
+
+  .evidence-box__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #9C5803;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* Baseline Section */
+  .baseline-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .baseline-section__title {
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+  }
+
+  .baseline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .baseline-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.15rem;
+  }
+
+  .baseline-card__label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    margin-bottom: 0.35rem;
+  }
+
+  .baseline-card__value {
+    display: block;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink-primary);
+    margin-bottom: 0.35rem;
+  }
+
+  .baseline-card__detail {
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  /* Takeaways Box */
+  .takeaways-box {
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+    margin-bottom: 2.5rem;
+  }
+
+  .takeaways-box__title {
+    font-size: 1.15rem;
+    margin-bottom: 0.85rem;
+    color: var(--ink-primary);
+  }
+
+  .takeaways-box__list {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    color: var(--ink-body);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Editorial Sections */
+  .guide-sec {
+    margin-bottom: 2.5rem;
+  }
+
+  .guide-sec h2 {
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+    margin-bottom: 1rem;
+  }
+
+  .guide-sec__content {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--ink-body);
+  }
+
+  /* Action CTA Card */
+  .action-cta-card {
+    background: linear-gradient(135deg, #16252B 0%, #1D313A 100%);
+    color: var(--ink-on-dark);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.75rem, 3.5vw, 2.5rem);
+    margin: 3rem 0;
+  }
+
+  .action-cta-card__badge {
+    display: inline-block;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(220, 139, 25, 0.25);
+    color: #F8B44A;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.85rem;
+  }
+
+  .action-cta-card__title {
+    color: var(--ink-on-dark);
+    font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+    margin-bottom: 0.75rem;
+  }
+
+  .action-cta-card__desc {
+    color: var(--ink-muted-on-dark);
+    font-size: 1rem;
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+    max-width: 680px;
+  }
+
+  /* FAQ Accordions */
+  .guide-faq-sec {
+    margin: 3.5rem 0;
+  }
+
+  .guide-faq-sec h2 {
+    font-size: 1.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .faq-accordion-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .faq-accordion {
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+  }
+
+  .faq-accordion[open] {
+    border-color: var(--border-light);
+  }
+
+  .faq-accordion__summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.15rem 1.35rem;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+    color: var(--ink-primary);
+  }
+
+  .faq-accordion__summary:hover {
+    background: var(--bg-page);
+  }
+
+  .faq-accordion__icon {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--ink-muted);
+    transition: transform 0.2s ease;
+  }
+
+  .faq-accordion[open] .faq-accordion__icon {
+    transform: rotate(45deg);
+  }
+
+  .faq-accordion__body {
+    padding: 0 1.35rem 1.35rem;
+    color: var(--ink-body);
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  /* Sidebar */
+  .guide-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 6rem;
+  }
+
+  .sidebar-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+
+  .sidebar-card--accent {
+    background: var(--bg-surface-raised);
+    border-color: var(--border-light);
+  }
+
+  .sidebar-card__pill {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--accent-amber);
+    background: #FFFFFF;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.65rem;
+  }
+
+  .sidebar-card h4 {
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-card p {
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+
+  .sidebar-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .sidebar-link-item {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    padding: 0.65rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s ease;
+  }
+
+  .sidebar-link-item:hover {
+    background: var(--bg-page);
+  }
+
+  .sidebar-link-item__cat {
+    font-size: 0.75rem;
+    color: var(--accent-amber);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .sidebar-link-item__title {
+    font-size: 0.9rem;
+    color: var(--ink-primary);
+    line-height: 1.4;
+  }
+</style>

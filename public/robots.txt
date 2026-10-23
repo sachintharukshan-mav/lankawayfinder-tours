@@ -1,0 +1,22 @@
+# Robots.txt for LankaWayfinder.tours
+User-agent: *
+Allow: /
+
+# Answer Engine Optimization (AEO) Crawlers for Live Search & Citations
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# LLM & AI Discovery Dossier
+# https://lankawayfinder.tours/llms.txt
+
+# Sitemap
+Sitemap: https://lankawayfinder.tours/sitemap-index.xml

@@ -1,0 +1,483 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TourCard from "../components/TourCard.astro";
+import siteData from "../data/sites/lankawayfinder.json";
+
+const { site, regions, tours, stays, guides } = siteData;
+
+// Pick top 4 featured tours for the homepage showcase
+const featuredTours = [...tours]
+  .sort((a, b) => b.ratingScore - a.ratingScore)
+  .slice(0, 4);
+
+// Top 4 hand-picked stays for homepage
+const featuredStays = stays.slice(0, 4);
+
+function getTripUrl(stay: typeof stays[0]) {
+  if (stay.hotelId) {
+    return `https://www.trip.com/hotels/detail/?hotelId=${stay.hotelId}&Allianceid=${site.tripAllianceId || "11096275"}&SID=${site.tripSid || "334154717"}&trip_sub1=&trip_sub3=${site.tripSub3 || "D20421816"}`;
+  }
+  return stay.tripUrl;
+}
+
+// Top 3 guides for homepage
+const featuredGuides = guides.slice(0, 3);
+
+const faqs = [
+  {
+    q: "How does the chauffeur and safari jeep handover work?",
+    a: "Your private chauffeur picks you up from your hotel in an air-conditioned sedan or van. At the national park perimeter, you transfer directly into your reserved 4x4 safari cruiser. While you are inside the park, your private driver remains parked outside with your luggage locked securely inside the vehicle. When the safari finishes, your chauffeur meets you with cold refreshments and continues your highway journey."
+  },
+  {
+    q: "Why do some Yala bookings cost $28 while others cost $84?",
+    a: "The $28 packages cover the private 4x4 jeep, fuel, and local tracker only; government Department of Wildlife Conservation (DWC) entrance permits (~$38 to $43 USD per foreign adult) must be purchased separately at the gate window. The $84 all-inclusive packages include pre-cleared barcoded entry permits, allowing your vehicle to bypass the morning ticket counter line when the park opens at 06:00 AM."
+  },
+  {
+    q: "Can I do Udawalawe Safari as a stopover between Ella and the south coast?",
+    a: "Yes, this is the most efficient travel route in Sri Lanka. Driving from Ella to Mirissa, Weligama, or Tangalle passes directly through Udawalawe town. You switch to a 3.5-hour private elephant safari at 09:00 AM or 02:00 PM, and your chauffeur transfers you to your beach resort before dusk."
+  },
+  {
+    q: "What is the best way to secure reserved seats on the Kandy to Ella train?",
+    a: "Sri Lanka Railways reserved train tickets sell out within minutes of release 30 days prior. We recommend booking a hybrid transfer package that guarantees reserved 2nd or 3rd class observation seats from Nanu Oya to Ella, while your private chauffeur handles the steep mountain road luggage transport."
+  },
+  {
+    q: "Are the safari jeeps private or shared with other tourists?",
+    a: "All 4x4 safari experiences mapped on this site are private bookings for your party only. You have exclusive use of the modified Toyota Hilux or Land Cruiser, private tracker, and open-top viewing hatches."
+  }
+];
+---
+
+<BaseLayout
+  title="Sri Lanka Safaris, Train Guides & Private Chauffeurs (2026) | LankaWayfinder.tours"
+  description="Plan Sri Lanka with zero hidden fees: verified 4x4 Yala & Udawalawe safaris (from $25), Kandy-to-Ella train seat hacks, and fixed-rate chauffeur transfers."
+  currentPath="/"
+>
+  <!-- ============================================================
+       1. HERO SECTION: Cinematic Video Backdrop + Dual CTAs + Trust Bar
+       ============================================================ -->
+  <section class="hero-video-stage">
+    <!-- LAYER 1: Full-Bleed Video Backdrop -->
+    <video
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="auto"
+      poster="/videos/hero-backdrop-poster.jpg"
+      class="hero-video"
+    >
+      <source src="/videos/hero-backdrop.webm" type="video/webm" />
+    </video>
+
+    <!-- LAYER 2: Contrast Scrim / Tint Overlay -->
+    <div class="hero-scrim"></div>
+
+    <!-- LAYER 3: Hero Content -->
+    <div class="container hero-stage-content animate-enter">
+      <div style="max-width:860px;margin:0 auto;text-align:center;">
+        <h1 class="hero-stage-title hero-reveal-1">
+          Experience the Wonder of Sri Lanka
+        </h1>
+
+        <p class="hero-stage-lead hero-reveal-2">
+          Curated 4×4 wildlife safaris, misty highland rail journeys, ancient UNESCO citadels, and private air-conditioned chauffeur transfers across the island.
+        </p>
+
+        <!-- Dual Action Buttons -->
+        <div class="hero-reveal-3" style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-bottom:3rem;">
+          <a href="#tours" class="btn btn--lg btn--amber">
+            <span>Explore Tours</span>
+            <span>→</span>
+          </a>
+          <a href="/getting-around/" class="btn btn--lg btn--ghost-white">
+            <span>Getting Around &amp; Chauffeurs</span>
+          </a>
+        </div>
+
+        <!-- Trust Row / Micro Proof -->
+        <div class="hero-stage-trust hero-reveal-4">
+          <div style="display:flex;align-items:center;gap:0.4rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#DC8B19" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span style="color:#DC8B19;font-weight:700;">4.92 / 5.0</span>
+            <span style="color:var(--ink-muted);">(16,000+ reviews)</span>
+          </div>
+          <span style="color:rgba(22, 37, 43, 0.2);">•</span>
+          <div style="display:flex;align-items:center;gap:0.4rem;font-weight:600;color:var(--ink-primary);">
+            <span>GetYourGuide Partner</span>
+          </div>
+          <span style="color:rgba(22, 37, 43, 0.2);">•</span>
+          <div style="color:var(--ink-muted);">
+            <span>Free 24h Cancellation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. WHY SRI LANKA? (Editorial Story + 3 Stat Pillars)
+       ============================================================ -->
+  <section class="section section--white">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Why Sri Lanka?</h2>
+        <p class="section-subtitle" style="max-width:720px;margin:0 auto;">
+          From tracking elusive leopards through Yala's coastal sand dunes to watching hundreds of wild Asian elephants gather along Minneriya's ancient reservoir beds, Sri Lanka packs exceptional biodiversity, culture, and dramatic landscapes per square mile.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Pillar 1 -->
+        <div class="stat-pillar-card" style="background:var(--bg-page);border-radius:var(--radius-lg);padding:2.25rem;border:1px solid var(--border-subtle);">
+          <div style="font-family:var(--font-serif);font-size:2.5rem;font-weight:700;color:var(--accent-amber);line-height:1;margin-bottom:0.75rem;">
+            <span class="stat-number">26</span>
+          </div>
+          <h3 style="font-size:1.25rem;margin-bottom:0.6rem;">National Parks</h3>
+          <p style="font-size:0.9375rem;color:var(--ink-body);line-height:1.6;margin:0;">
+            Boasting the highest density of wild Asian elephants and Sri Lankan leopards globally, alongside endemic sloth bears, mugger crocodiles, and ocean blue whales.
+          </p>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="stat-pillar-card" style="background:var(--bg-page);border-radius:var(--radius-lg);padding:2.25rem;border:1px solid var(--border-subtle);">
+          <div style="font-family:var(--font-serif);font-size:2.5rem;font-weight:700;color:var(--accent-amber);line-height:1;margin-bottom:0.75rem;">
+            <span class="stat-number">8</span>
+          </div>
+          <h3 style="font-size:1.25rem;margin-bottom:0.6rem;">UNESCO World Heritage Sites</h3>
+          <p style="font-size:0.9375rem;color:var(--ink-body);line-height:1.6;margin:0;">
+            Over 2,500 years of civilization: 5th-century granite sky citadels at Sigiriya, golden cave monasteries at Dambulla, and 17th-century Dutch maritime ramparts at Galle.
+          </p>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="stat-pillar-card" style="background:var(--bg-page);border-radius:var(--radius-lg);padding:2.25rem;border:1px solid var(--border-subtle);">
+          <div style="font-family:var(--font-serif);font-size:2.5rem;font-weight:700;color:var(--accent-amber);line-height:1;margin-bottom:0.75rem;">
+            <span class="stat-number">365</span>
+          </div>
+          <h3 style="font-size:1.25rem;margin-bottom:0.6rem;">Days of Island Sunshine</h3>
+          <p style="font-size:0.9375rem;color:var(--ink-body);line-height:1.6;margin:0;">
+            Sri Lanka's unique dual-monsoon matrix ensures that when the southwest coast experiences rain, the northeast coast and cultural dry zone bask in glorious clear sunshine.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       3. THE BEST TOURS & EXPERIENCES (Top 4 Tour Cards Grid)
+       ============================================================ -->
+  <section class="section section--cream" id="tours">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">The Best Tours &amp; Experiences</h2>
+        <p class="section-subtitle">
+          Vetted for driver reliability, ethical wildlife distances, and reliable road transit.
+        </p>
+      </div>
+
+      <!-- 4-Card Responsive Grid -->
+      <div class="grid-4" style="margin-bottom:3rem;">
+        {featuredTours.map((tour) => (
+          <TourCard tour={tour} />
+        ))}
+      </div>
+
+      <!-- See All Tours CTA -->
+      <div style="text-align:center;">
+        <a href="/tours/" class="btn btn--lg btn--amber">
+          <span>See all 10 experiences</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. LIVE AVAILABILITY / DIRECT BOOKING (GetYourGuide Integration)
+       ============================================================ -->
+  <section class="section section--white">
+    <div class="container">
+      <div style="background-color:#16252B;border-radius:var(--radius-lg);color:#FFFFFF;padding:clamp(1.75rem, 4vw, 3.5rem);display:grid;grid-template-columns:1fr;gap:2rem;align-items:center;word-break:break-word;"
+        class="md:grid-cols-[1.3fr_1fr]"
+      >
+        <div>
+          <h2 style="font-size:clamp(1.75rem, 3vw, 2.5rem);color:#FFFFFF;margin-bottom:1rem;">
+            Book Directly with Complete Flexibility
+          </h2>
+
+          <p style="font-size:1.0625rem;color:var(--ink-muted-on-dark);line-height:1.6;margin-bottom:1.5rem;">
+            Every tour on LankaWayfinder links directly to the official GetYourGuide booking portal. You receive instant mobile confirmation, barcode tickets on your smartphone, and 24-hour free cancellation on nearly every experience.
+          </p>
+
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.6rem;font-size:0.9375rem;color:#FDF9F2;">
+            <li style="display:flex;align-items:center;gap:0.6rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DC8B19" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Reserve now &amp; pay later option on eligible activities</span>
+            </li>
+            <li style="display:flex;align-items:center;gap:0.6rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DC8B19" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Direct access to English-speaking licensed guides and park trackers</span>
+            </li>
+            <li style="display:flex;align-items:center;gap:0.6rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DC8B19" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>No hidden card processing surcharges or ticket counter markups</span>
+            </li>
+          </ul>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:2rem;text-align:center;">
+          <div style="margin-bottom:0.75rem;color:#DC8B19;display:flex;justify-content:center;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="13" y2="16"></line></svg>
+          </div>
+          <h3 style="font-size:1.35rem;color:#FFFFFF;margin-bottom:0.6rem;">Instant Mobile Dispatch</h3>
+          <p style="font-size:0.875rem;color:var(--ink-muted-on-dark);line-height:1.55;margin-bottom:1.5rem;">
+            Simply show your smartphone voucher at park gates, harbor piers, or to your private chauffeur.
+          </p>
+          <a href="/tours/" class="btn btn--amber btn--block">
+            <span>Browse All Available Dates</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       5. WHERE TO GO: ISLAND CORRIDORS
+       ============================================================ -->
+  <section class="section section--cream">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Where to Go: Island Corridors</h2>
+        <p class="section-subtitle">
+          From arid leopard thornscrub to misty tea valleys, explore Sri Lanka's signature regions.
+        </p>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:2.5rem;">
+        {regions.map((region) => (
+          <a href={`/${region.slug}/`} class="corridor-card" aria-label={`Explore ${region.name}`}>
+            <img
+              src={region.image}
+              alt={region.name}
+              class="corridor-card__bg"
+              loading="lazy"
+            />
+            <div class="corridor-card__overlay"></div>
+            <div class="corridor-card__content">
+              <h3 class="corridor-card__title">{region.name}</h3>
+              <p class="corridor-card__tagline">{region.tagline}</p>
+              <span class="corridor-card__cta">
+                <span>Explore Corridor</span>
+                <span>→</span>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div style="text-align:center;">
+        <a href="/destinations/" class="btn btn--teal">
+          <span>View all things to do</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       6. WHERE TO STAY (Hand-Picked Hotels with Plain Links)
+       ============================================================ -->
+  <section class="section section--white">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Where to Stay: Hand-Picked Lodges &amp; Villas</h2>
+        <p class="section-subtitle">
+          Field-tested safari camps, colonial tea planter bungalows, and historic heritage havens.
+        </p>
+      </div>
+
+      <div class="grid-4" style="margin-bottom:3rem;">
+        {featuredStays.map((stay) => {
+          const tripUrl = getTripUrl(stay);
+          return (
+            <article class="stay-card">
+              <a
+                href={tripUrl}
+                target="_blank"
+                rel="sponsored noopener noreferrer"
+                class="stay-card__media"
+                aria-label={`View ${stay.name} rates on Trip.com`}
+              >
+                <img
+                  src={stay.image}
+                  alt={stay.name}
+                  loading="lazy"
+                  width="600"
+                  height="380"
+                />
+                <span class="stay-card__tier">{stay.priceTier}</span>
+              </a>
+
+              <div class="stay-card__body">
+                <div class="stay-card__region">{stay.region}</div>
+                <h3 class="stay-card__name" style="font-size:1.15rem;">
+                  <a
+                    href={tripUrl}
+                    target="_blank"
+                    rel="sponsored noopener noreferrer"
+                  >
+                    {stay.name}
+                  </a>
+                </h3>
+                <p class="stay-card__desc" style="font-size:0.875rem;line-height:1.45;margin-bottom:1rem;">
+                  {stay.description.slice(0, 95)}...
+                </p>
+
+                <div class="stay-card__footer">
+                  <a
+                    href={tripUrl}
+                    target="_blank"
+                    rel="sponsored noopener noreferrer"
+                    class="btn btn--sm btn--teal btn--block"
+                    aria-label={`See rates & availability for ${stay.name}`}
+                  >
+                    <span>See rates &amp; availability</span>
+                    <span>↗</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <div style="text-align:center;">
+        <a href="/where-to-stay/" class="btn btn--ghost">
+          <span>View all hand-picked stays</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       7. TRAVEL GUIDES & INSIDER ADVICE
+       ============================================================ -->
+  <section class="section section--cream">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Travel Guides &amp; Field Notes</h2>
+        <p class="section-subtitle">
+          Practical route tips from licensed transport dispatchers and local insiders.
+        </p>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:3rem;">
+        {featuredGuides.map((guide) => (
+          <article class="guide-card">
+            <div class="guide-card__media">
+              <img
+                src={guide.image}
+                alt={guide.title}
+                loading="lazy"
+                width="600"
+                height="340"
+              />
+            </div>
+            <div class="guide-card__body">
+              <div class="guide-card__meta">
+                <span>{guide.category}</span>
+                <span style="color:var(--ink-muted);font-weight:500;">{guide.readTime}</span>
+              </div>
+              <h3 class="guide-card__title" style="font-size:1.15rem;">
+                {guide.title}
+              </h3>
+              <p class="guide-card__desc" style="font-size:0.875rem;">
+                {guide.summary}
+              </p>
+              <a href={`/travel-guide/${guide.slug}/`} class="guide-card__cta">
+                <span>Read field dossier</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div style="text-align:center;">
+        <a href="/travel-guide/" class="btn btn--ghost">
+          <span>Explore all travel guides</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       8. DARK SLATE CTA BAND (GiliAir Style)
+       ============================================================ -->
+  <section class="section section--dark" style="text-align:center;">
+    <div class="container" style="max-width:760px;">
+      <h2 style="font-size:clamp(1.85rem, 3.4vw, 2.75rem);color:#FFFFFF;margin-bottom:1.25rem;">
+        Turn island journeys into the trip of a lifetime
+      </h2>
+      <p style="font-size:1.125rem;color:var(--ink-muted-on-dark);line-height:1.6;margin-bottom:2.25rem;">
+        Book verified 4x4 safaris with instant e-tickets, or arrange private air-conditioned chauffeur transfers with luggage custody across any regional corridor.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;">
+        <a href="/tours/" class="btn btn--lg btn--amber">
+          <span>Explore All Tours</span>
+          <span>→</span>
+        </a>
+        <a href="/getting-around/" class="btn btn--lg btn--ghost-white">
+          <span>Getting Around Guide</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       9. FREQUENTLY ASKED QUESTIONS (Native Details Accordion)
+       ============================================================ -->
+  <section class="section section--white">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">
+          Everything you need to know about safari jeeps, park permits, and chauffeur luggage security.
+        </p>
+      </div>
+
+      <div class="faq-accordion">
+        {faqs.map((faq) => (
+          <details class="faq-item">
+            <summary class="faq-trigger">
+              <span>{faq.q}</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="faq-content">
+              <p>{faq.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- JSON-LD FAQPage Schema for Search Engines and AI Answer Engines -->
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqs.map(f => ({
+          "@type": "Question",
+          "name": f.q,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": f.a
+          }
+        }))
+      })} />
+    </div>
+  </section>
+</BaseLayout>

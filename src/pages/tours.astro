@@ -1,0 +1,189 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TourCard from "../components/TourCard.astro";
+import siteData from "../data/sites/lankawayfinder.json";
+
+const { tours } = siteData;
+
+// Sort by highest rating first
+const sortedTours = [...tours].sort((a, b) => b.ratingScore - a.ratingScore);
+
+const categories = [
+  { name: "All Experiences", filter: "all" },
+  { name: "Wildlife & Safaris", filter: "safari" },
+  { name: "Culture & Heritage", filter: "culture" },
+  { name: "Highlands & Railways", filter: "rail" },
+  { name: "Ocean & Marine", filter: "ocean" },
+  { name: "Culinary & City", filter: "food" },
+];
+---
+
+<BaseLayout
+  title="10 Best Sri Lanka Safaris & Day Tours (2026 Verified) | LankaWayfinder"
+  description="Compare 10 verified Sri Lanka tours & 4x4 wildlife safaris in Yala, Udawalawe & Minneriya (from $25). Pre-cleared DWC permits & 24-hour free cancellation."
+  currentPath="/tours/"
+>
+  <!-- Page Hero -->
+  <section class="section section--cream" style="padding-top:clamp(4rem, 6vw, 5.5rem);padding-bottom:clamp(3rem, 5vw, 4.5rem);">
+    <div class="container">
+      <div class="section-header section-header--left" style="max-width:820px;margin-bottom:0;">
+        <span class="section-pill">Verified Experiences</span>
+        <h1 style="margin-bottom:1rem;">Tours &amp; Wildlife Safaris in Sri Lanka</h1>
+        <p class="section-subtitle">
+          Every experience in our collection has been independently vetted for route feasibility, tracker quality, and reliable booking. Book online with instant confirmation and 24-hour free cancellation.
+        </p>
+
+        <!-- JSON-LD BreadcrumbList Schema -->
+        <script type="application/ld+json" set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://lankawayfinder.tours/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Tours & Safaris",
+              "item": "https://lankawayfinder.tours/tours/"
+            }
+          ]
+        })} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Pills Bar & Tour Grid -->
+  <section class="section" id="tours">
+    <div class="container">
+      <!-- Category Filter Tabs -->
+      <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:2.5rem;align-items:center;" id="filter-container" data-ui>
+        {categories.map((c, i) => (
+          <button
+            type="button"
+            id={c.filter}
+            class={`btn btn--sm ${i === 0 ? "btn--amber" : "btn--ghost"}`}
+            data-filter={c.filter}
+            style="font-size:0.875rem;"
+          >
+            {c.name}
+          </button>
+        ))}
+      </div>
+
+      <!-- Tours Responsive Grid -->
+      <div class="grid-3" id="tours-grid" data-ui>
+        {sortedTours.map((tour) => {
+          let catClass = "safari";
+          if (tour.category.toLowerCase().includes("culture") || tour.category.toLowerCase().includes("heritage")) catClass = "culture";
+          else if (tour.category.toLowerCase().includes("rail") || tour.category.toLowerCase().includes("hiking")) catClass = "rail";
+          else if (tour.category.toLowerCase().includes("ocean") || tour.category.toLowerCase().includes("marine")) catClass = "ocean";
+          else if (tour.category.toLowerCase().includes("culinary") || tour.category.toLowerCase().includes("food")) catClass = "food";
+
+          return (
+            <div class="tour-item-wrapper" data-cat={catClass}>
+              <TourCard tour={tour} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Trust Bar -->
+  <section class="section section--cream">
+    <div class="container">
+      <div class="grid-3" style="text-align:center;" data-ui>
+        <div class="trust-feature-card" style="background:#FFFFFF;border-radius:var(--radius-lg);padding:2rem;border:1px solid var(--border-subtle);">
+          <div style="margin-bottom:0.75rem;color:var(--accent-amber);display:flex;justify-content:center;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <h3 style="font-size:1.2rem;margin-bottom:0.5rem;">Free 24h Cancellation</h3>
+          <p style="font-size:0.9375rem;color:var(--ink-muted);line-height:1.5;margin:0;">
+            Plans change. Cancel up to 24 hours in advance on most experiences for a full, hassle-free refund.
+          </p>
+        </div>
+
+        <div class="trust-feature-card" style="background:#FFFFFF;border-radius:var(--radius-lg);padding:2rem;border:1px solid var(--border-subtle);">
+          <div style="margin-bottom:0.75rem;color:var(--accent-amber);display:flex;justify-content:center;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </div>
+          <h3 style="font-size:1.2rem;margin-bottom:0.5rem;">Instant Mobile Confirmation</h3>
+          <p style="font-size:0.9375rem;color:var(--ink-muted);line-height:1.5;margin:0;">
+            Secure your date immediately without waiting for emails. Mobile barcoded tickets sent straight to your phone.
+          </p>
+        </div>
+
+        <div class="trust-feature-card" style="background:#FFFFFF;border-radius:var(--radius-lg);padding:2rem;border:1px solid var(--border-subtle);">
+          <div style="margin-bottom:0.75rem;color:var(--accent-amber);display:flex;justify-content:center;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          </div>
+          <h3 style="font-size:1.2rem;margin-bottom:0.5rem;">Chauffeur Synchronization</h3>
+          <p style="font-size:0.9375rem;color:var(--ink-muted);line-height:1.5;margin:0;">
+            Smoothly pair any tour with private road transfers. Your luggage stays locked safely in the car during safaris.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const filterBtns = document.querySelectorAll("#filter-container button");
+  const tourItems = document.querySelectorAll("#tours-grid .tour-item-wrapper");
+
+  function applyFilter(rawFilter: string) {
+    let filter = rawFilter.toLowerCase().replace("#", "");
+    if (filter === "wildlife") filter = "safari";
+    if (filter === "heritage") filter = "culture";
+    if (filter === "highlands") filter = "rail";
+    if (filter === "marine") filter = "ocean";
+    if (filter === "culinary") filter = "food";
+
+    let matchedBtn: Element | null = null;
+    filterBtns.forEach((b) => {
+      const bFilter = b.getAttribute("data-filter");
+      if (bFilter === filter) matchedBtn = b;
+      b.classList.remove("btn--amber");
+      b.classList.add("btn--ghost");
+    });
+
+    if (matchedBtn) {
+      matchedBtn.classList.remove("btn--ghost");
+      matchedBtn.classList.add("btn--amber");
+    } else {
+      filterBtns[0]?.classList.remove("btn--ghost");
+      filterBtns[0]?.classList.add("btn--amber");
+      filter = "all";
+    }
+
+    tourItems.forEach((item) => {
+      const cat = item.getAttribute("data-cat");
+      if (filter === "all" || cat === filter) {
+        (item as HTMLElement).style.display = "block";
+      } else {
+        (item as HTMLElement).style.display = "none";
+      }
+    });
+  }
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const filter = btn.getAttribute("data-filter") || "all";
+      applyFilter(filter);
+    });
+  });
+
+  // Handle URL hash on load or change (e.g. /tours#safari)
+  if (window.location.hash) {
+    applyFilter(window.location.hash);
+  }
+  window.addEventListener("hashchange", () => {
+    if (window.location.hash) {
+      applyFilter(window.location.hash);
+    }
+  });
+</script>

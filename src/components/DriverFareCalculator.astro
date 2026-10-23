@@ -1,0 +1,447 @@
+---
+// Driver Fare Calculator - Real Market Daily Rates, Highway Tolls & Zero-Commission Pledge
+---
+
+<div class="driver-calc" id="driver-calc" data-ui>
+  <div class="driver-calc__header">
+    <div class="driver-calc__badge">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M14 16H9m10 0h3v-3.5a2.5 2.5 0 0 0-2.5-2.5H18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10h2m0 0a3 3 0 1 0 6 0m8 0a3 3 0 1 0 6 0" />
+      </svg>
+      <span>Zero-Commission Pricing Engine</span>
+    </div>
+    <h3 class="driver-calc__title">Sri Lanka Private Chauffeur Fair-Rate &amp; Toll Calculator</h3>
+    <p class="driver-calc__subtitle">
+      Eliminate the "cheap quote" trap. Check real market daily rates with fuel, Expressway tolls, and driver lodging accounted for—with guaranteed zero commission detours to spice or gem shops.
+    </p>
+  </div>
+
+  <form class="driver-calc__form" id="driver-calc-form" onsubmit="return false;">
+    <fieldset class="driver-calc__fieldset">
+      <legend class="driver-calc__legend">1. Select Travel Corridor or Duration</legend>
+      <div class="driver-calc__radios">
+        <label class="driver-calc__radio-label">
+          <input type="radio" name="itinerary" value="day" />
+          <span class="driver-calc__radio-box">
+            <strong>1-Day Excursion</strong>
+            <small>e.g., Colombo &harr; Galle or Sigiriya</small>
+          </span>
+        </label>
+        <label class="driver-calc__radio-label">
+          <input type="radio" name="itinerary" value="3day" />
+          <span class="driver-calc__radio-box">
+            <strong>3-Day Triangle Express</strong>
+            <small>Colombo &rarr; Sigiriya &rarr; Kandy</small>
+          </span>
+        </label>
+        <label class="driver-calc__radio-label">
+          <input type="radio" name="itinerary" value="7day" checked />
+          <span class="driver-calc__radio-box">
+            <strong>7-Day Classic Circuit</strong>
+            <small>Triangle &rarr; Highlands &rarr; Galle</small>
+          </span>
+        </label>
+        <label class="driver-calc__radio-label">
+          <input type="radio" name="itinerary" value="10day" />
+          <span class="driver-calc__radio-box">
+            <strong>10-Day Grand Island Loop</strong>
+            <small>Complete Island Heritage &amp; Wildlife</small>
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="driver-calc__grid-2">
+      <fieldset class="driver-calc__fieldset">
+        <legend class="driver-calc__legend">2. Vehicle Class</legend>
+        <div class="driver-calc__radios driver-calc__radios--col">
+          <label class="driver-calc__radio-label">
+            <input type="radio" name="vehicle" value="sedan" checked />
+            <span class="driver-calc__radio-box">
+              <strong>Premium Air-Con Sedan</strong>
+              <small>Toyota Prius / Axio &bull; Up to 3 Passengers + 2 Bags</small>
+            </span>
+          </label>
+          <label class="driver-calc__radio-label">
+            <input type="radio" name="vehicle" value="minivan" />
+            <span class="driver-calc__radio-box">
+              <strong>Spacious Luxury Mini Van</strong>
+              <small>Toyota KDH / Noah &bull; 4 to 6 Passengers + 5 Bags</small>
+            </span>
+          </label>
+          <label class="driver-calc__radio-label">
+            <input type="radio" name="vehicle" value="hiace" />
+            <span class="driver-calc__radio-box">
+              <strong>Full-Size Toyota Commuter HiAce</strong>
+              <small>6 to 9 Passengers + 8 Large Bags</small>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset class="driver-calc__fieldset">
+        <legend class="driver-calc__legend">3. Overnight Accommodation Setup</legend>
+        <div class="driver-calc__radios driver-calc__radios--col">
+          <label class="driver-calc__radio-label">
+            <input type="radio" name="stayType" value="hotel" checked />
+            <span class="driver-calc__radio-box">
+              <strong>Standard 3&ndash;5 Star Hotels / Resorts</strong>
+              <small>Most Sri Lankan hotels provide complimentary driver quarters &amp; meals ($0 extra)</small>
+            </span>
+          </label>
+          <label class="driver-calc__radio-label">
+            <input type="radio" name="stayType" value="villa" />
+            <span class="driver-calc__radio-box">
+              <strong>Private Boutique Villas / Airbnbs</strong>
+              <small>Requires fixed driver room &amp; meal allowance ($10 USD / 3,000 LKR per night)</small>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
+  </form>
+
+  <!-- Live Output Results Area -->
+  <div class="driver-calc__results" aria-live="polite" id="driver-results">
+    <div class="driver-calc__breakdown">
+      <h4 class="driver-calc__breakdown-title">Fair Market Cost Breakdown</h4>
+      <div class="driver-calc__row">
+        <span>Vehicle Daily Hire (<span id="out-driver-days">7</span> days &times; <span id="out-daily-rate">$70</span>/day)</span>
+        <strong id="out-hire-total">$490.00</strong>
+      </div>
+      <div class="driver-calc__row">
+        <span>Fuel &amp; Comprehensive Commercial Insurance</span>
+        <strong style="color:#0E6A3B;">Included</strong>
+      </div>
+      <div class="driver-calc__row">
+        <span>RDA Expressway Highway Tolls (E01, E02, E03)</span>
+        <strong style="color:#0E6A3B;">Included (No cash hassle)</strong>
+      </div>
+      <div class="driver-calc__row">
+        <span>Driver Accommodation &amp; Meals</span>
+        <strong id="out-driver-lodging">$0.00 (Hotel Quarters)</strong>
+      </div>
+      <div class="driver-calc__row">
+        <span>Zero-Commission Policy (No Spice/Gem Detours)</span>
+        <strong style="color:#0E6A3B;">Guaranteed in Writing</strong>
+      </div>
+      <div class="driver-calc__divider"></div>
+      <div class="driver-calc__row driver-calc__row--total">
+        <div>
+          <strong>Transparent All-Inclusive Total:</strong>
+          <span class="driver-calc__fx-rate">No surprise checkout fuel surcharges</span>
+        </div>
+        <div class="driver-calc__total-price" id="out-driver-total">$490.00 USD</div>
+      </div>
+    </div>
+
+    <!-- Booking / Inquiry CTA Box -->
+    <div class="driver-calc__recommendation">
+      <div class="driver-calc__rec-header">
+        <span class="driver-calc__rec-badge">Zero-Commission Dispatch</span>
+        <h5 class="driver-calc__rec-title">Lock in Your Verified English-Speaking Driver</h5>
+      </div>
+      <p class="driver-calc__rec-text">
+        Every LankaWayfinder chauffeur is vetted for safe mountain driving, fluent English, and strictly signs our <strong>Anti-Detour Code of Ethics</strong>. Your price is fixed before you land.
+      </p>
+      <div class="driver-calc__rec-actions" style="display:flex;flex-direction:column;gap:0.75rem;">
+        <a
+          id="driver-contact-btn"
+          href="/contact/?subject=chauffeur-hire&days=7&vehicle=sedan"
+          class="btn btn--primary"
+          style="width:100%;justify-content:center;"
+        >
+          <span>Request Custom Chauffeur Itinerary Quote</span>
+          <span>→</span>
+        </a>
+        <a
+          href="https://www.lankawayfinder.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn--secondary"
+          style="width:100%;justify-content:center;font-size:0.875rem;"
+        >
+          <span>Need Only Airport Transfer? Book on LankaWayfinder.com &rarr;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initDriverCalc() {
+    const form = document.getElementById("driver-calc-form") as HTMLFormElement | null;
+    if (!form) return;
+
+    const contactBtn = document.getElementById("driver-contact-btn") as HTMLAnchorElement;
+
+    const outDriverDays = document.getElementById("out-driver-days")!;
+    const outDailyRate = document.getElementById("out-daily-rate")!;
+    const outHireTotal = document.getElementById("out-hire-total")!;
+    const outDriverLodging = document.getElementById("out-driver-lodging")!;
+    const outDriverTotal = document.getElementById("out-driver-total")!;
+
+    function recalculate() {
+      const itinRadio = form?.querySelector('input[name="itinerary"]:checked') as HTMLInputElement;
+      const vehRadio = form?.querySelector('input[name="vehicle"]:checked') as HTMLInputElement;
+      const stayRadio = form?.querySelector('input[name="stayType"]:checked') as HTMLInputElement;
+
+      const itin = itinRadio ? itinRadio.value : "7day";
+      const vehicle = vehRadio ? vehRadio.value : "sedan";
+      const stay = stayRadio ? stayRadio.value : "hotel";
+
+      let days = 7;
+      if (itin === "day") days = 1;
+      else if (itin === "3day") days = 3;
+      else if (itin === "10day") days = 10;
+
+      let ratePerDay = 70; // standard sedan
+      if (vehicle === "minivan") ratePerDay = 85;
+      else if (vehicle === "hiace") ratePerDay = 105;
+
+      const hireTotal = days * ratePerDay;
+      const nights = Math.max(0, days - 1);
+      const lodgingTotal = stay === "villa" ? nights * 10 : 0;
+
+      const grandTotal = hireTotal + lodgingTotal;
+
+      outDriverDays.textContent = days.toString();
+      outDailyRate.textContent = `$${ratePerDay}`;
+      outHireTotal.textContent = `$${hireTotal.toFixed(2)}`;
+
+      if (lodgingTotal > 0) {
+        outDriverLodging.textContent = `$${lodgingTotal.toFixed(2)} (${nights} nights)`;
+        outDriverLodging.style.color = "var(--ink-primary)";
+      } else {
+        outDriverLodging.textContent = "$0.00 (Hotel Quarters)";
+        outDriverLodging.style.color = "#0E6A3B";
+      }
+
+      outDriverTotal.textContent = `$${grandTotal.toFixed(2)} USD`;
+
+      if (contactBtn) {
+        contactBtn.href = `/contact/?subject=chauffeur-hire&days=${days}&vehicle=${vehicle}&stay=${stay}&estTotal=${grandTotal}`;
+      }
+    }
+
+    form.addEventListener("change", recalculate);
+    recalculate();
+  }
+
+  document.addEventListener("DOMContentLoaded", initDriverCalc);
+  document.addEventListener("astro:page-load", initDriverCalc);
+</script>
+
+<style>
+  .driver-calc {
+    background: #FFFFFF;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    padding: clamp(1.75rem, 3.5vw, 2.75rem);
+    box-shadow: 0 4px 20px rgba(22, 37, 43, 0.04);
+    margin: 2.5rem 0;
+  }
+
+  .driver-calc__header {
+    margin-bottom: 2rem;
+  }
+
+  .driver-calc__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-amber);
+    background: #FDF9F2;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(220, 139, 25, 0.25);
+    margin-bottom: 0.75rem;
+  }
+
+  .driver-calc__title {
+    font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+    color: var(--ink-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .driver-calc__subtitle {
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 780px;
+  }
+
+  .driver-calc__fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 1.75rem 0;
+  }
+
+  .driver-calc__legend {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--ink-primary);
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .driver-calc__radios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .driver-calc__radios--col {
+    grid-template-columns: 1fr;
+  }
+
+  .driver-calc__radio-label {
+    position: relative;
+    cursor: pointer;
+    display: block;
+  }
+
+  .driver-calc__radio-label input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .driver-calc__radio-box {
+    display: flex;
+    flex-direction: column;
+    padding: 0.85rem 1rem;
+    background: var(--bg-page);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+  }
+
+  .driver-calc__radio-box strong {
+    font-size: 0.9375rem;
+    color: var(--ink-primary);
+    margin-bottom: 0.2rem;
+  }
+
+  .driver-calc__radio-box small {
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+  }
+
+  .driver-calc__radio-label input[type="radio"]:checked + .driver-calc__radio-box {
+    background: #FFFFFF;
+    border-color: var(--accent-amber);
+    box-shadow: 0 0 0 1.5px var(--accent-amber);
+  }
+
+  .driver-calc__radio-label input[type="radio"]:focus-visible + .driver-calc__radio-box {
+    outline: 2px solid var(--accent-amber);
+    outline-offset: 2px;
+  }
+
+  .driver-calc__grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .driver-calc__results {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
+    background: var(--bg-page);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  }
+
+  @media (max-width: 860px) {
+    .driver-calc__results {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .driver-calc__breakdown-title {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: var(--ink-primary);
+  }
+
+  .driver-calc__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.875rem;
+    color: var(--ink-body);
+    margin-bottom: 0.65rem;
+  }
+
+  .driver-calc__divider {
+    height: 1px;
+    background: var(--border-light);
+    margin: 1rem 0;
+  }
+
+  .driver-calc__row--total {
+    margin-bottom: 0;
+  }
+
+  .driver-calc__row--total strong {
+    font-size: 0.95rem;
+    color: var(--ink-primary);
+    display: block;
+  }
+
+  .driver-calc__fx-rate {
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+  }
+
+  .driver-calc__total-price {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--accent-amber);
+  }
+
+  .driver-calc__recommendation {
+    background: #FFFFFF;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(220, 139, 25, 0.35);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .driver-calc__rec-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: #FFF5E5;
+    color: #9C5803;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.4rem;
+  }
+
+  .driver-calc__rec-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--ink-primary);
+  }
+
+  .driver-calc__rec-text {
+    font-size: 0.84rem;
+    color: var(--ink-muted);
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+</style>

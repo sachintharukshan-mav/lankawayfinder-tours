@@ -1,0 +1,231 @@
+---
+import siteData from "../data/sites/lankawayfinder.json";
+
+export interface Tour {
+  id: string;
+  slug: string;
+  title: string;
+  category?: string;
+  location?: string;
+  durationShort?: string;
+  region: string;
+  regionSlug: string;
+  image: string;
+  badge?: string;
+  price: string;
+  priceNumeric: number;
+  bookingType: string;
+  gateOrHarbor: string;
+  duration: string;
+  departureTime?: string;
+  rating: string;
+  ratingScore: number;
+  reviewCount: number;
+  highlights?: string[];
+  overview: string;
+  chauffeurNote: string;
+  dwcNote?: string;
+  gygActivityPath?: string;
+  gygActivityId?: string;
+  isTopPick?: boolean;
+  isHighestRated?: boolean;
+}
+
+interface Props {
+  tour: Tour;
+}
+
+const { tour } = Astro.props;
+const { site } = siteData;
+
+const gygUrl = tour.gygActivityPath
+  ? `https://www.getyourguide.com/${tour.gygActivityPath}/?partner_id=${site.partnerId}&utm_medium=online_publisher&cmp=${site.campaignPrefix}_card_${tour.id}`
+  : `https://www.getyourguide.com/activity/-t${tour.gygActivityId || tour.id}/?partner_id=${site.partnerId}&utm_medium=online_publisher&cmp=${site.campaignPrefix}_card_${tour.id}`;
+
+const cleanPrice = tour.price.replace("FROM ", "");
+const categoryName = tour.category || tour.bookingType.split(" ")[0];
+const durationDisplay = tour.durationShort || tour.duration.replace("DURATION: ", "").split(" • ")[0];
+const locationDisplay = tour.location || tour.region;
+---
+
+<article class="tour-card" data-ui>
+  <!-- Card Image Media -->
+  <a
+    href={gygUrl}
+    target="_blank"
+    rel="sponsored noopener noreferrer"
+    class="tour-card__media"
+    aria-label={`View ${tour.title} on GetYourGuide`}
+  >
+    <img
+      src={tour.image}
+      alt={tour.title}
+      loading="lazy"
+      width="600"
+      height="375"
+    />
+
+    <!-- Category Pill -->
+    <span class="tour-card__category">
+      {categoryName}
+    </span>
+
+    <!-- Price Pill -->
+    <span class="tour-card__badge-price">
+      From {cleanPrice}
+    </span>
+  </a>
+
+  <!-- Card Body Content -->
+  <div class="tour-card__content">
+    <!-- Rating & Review Count -->
+    <div class="tour-card__rating-row">
+      <span class="tour-card__rating-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#DC8B19" aria-hidden="true">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <span>{tour.ratingScore.toFixed(2)}</span>
+      </span>
+      <span>({tour.reviewCount.toLocaleString()} reviews)</span>
+      <span>•</span>
+      <span>Verified</span>
+    </div>
+
+    <!-- Title -->
+    <h3 class="tour-card__title">
+      <a href={gygUrl} target="_blank" rel="sponsored noopener noreferrer">
+        {tour.title}
+      </a>
+    </h3>
+
+    <!-- Meta Information: Duration & Location -->
+    <div class="tour-card__meta-row">
+      <span class="tour-card__meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        {durationDisplay}
+      </span>
+      <span class="tour-card__meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        {locationDisplay}
+      </span>
+    </div>
+
+    <!-- Highlights -->
+    {tour.highlights && tour.highlights.length > 0 ? (
+      <ul class="tour-card__highlights">
+        {tour.highlights.slice(0, 2).map((h) => (
+          <li>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DC8B19" stroke-width="2.5" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>{h}</span>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p style="font-size:0.875rem;color:var(--ink-body);line-height:1.45;margin-bottom:1rem;">
+        {tour.overview.slice(0, 110)}...
+      </p>
+    )}
+
+    <!-- Chauffeur Field Note Callout -->
+    <div class="tour-card__fieldnote">
+      <strong>Chauffeur dispatch note</strong>
+      <span>{tour.chauffeurNote}</span>
+    </div>
+
+    <!-- Trust Badges (Firecrawl High-Intent CRO Optimization) -->
+    <div class="tour-card__trust-row">
+      <span class="tour-card__trust-item">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        Instant Confirmation
+      </span>
+      <span class="tour-card__trust-item">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        Free 24h Cancel
+      </span>
+      {tour.id === "yala-all-inclusive-vip" ? (
+        <span class="tour-card__trust-item" style="color:#B26A06;background:#FEF9E7;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          DWC Entry Included
+        </span>
+      ) : tour.id.includes("train") ? (
+        <span class="tour-card__trust-item" style="color:#1D6335;background:#EAF6EE;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+          Reserved Scenic Seat
+        </span>
+      ) : (
+        <span class="tour-card__trust-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+          </svg>
+          Mobile e-Ticket
+        </span>
+      )}
+    </div>
+
+    <!-- Card Footer: Price & CTA Button -->
+    <div class="tour-card__footer">
+      <div class="tour-card__price-box">
+        <span class="tour-card__price-label">Price per person</span>
+        <span class="tour-card__price-val">{cleanPrice}</span>
+      </div>
+
+      <a
+        href={gygUrl}
+        target="_blank"
+        rel="sponsored noopener noreferrer"
+        class="btn btn--sm btn--amber"
+        aria-label={`Check availability for ${tour.title}`}
+      >
+        <span>Check availability</span>
+        <span>→</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Machine-Readable Schema (JSON-LD) for Google Star Snippets & AI Answer Engines -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": tour.title,
+    "description": tour.overview,
+    "image": tour.image,
+    "category": tour.category || "Tour",
+    "brand": {
+      "@type": "Brand",
+      "name": "GetYourGuide Verified Partner"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": tour.priceNumeric,
+      "priceCurrency": "USD",
+      "priceValidUntil": "2027-12-31",
+      "availability": "https://schema.org/InStock",
+      "url": gygUrl
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": tour.ratingScore.toString(),
+      "reviewCount": tour.reviewCount,
+      "bestRating": "5",
+      "worstRating": "1"
+    }
+  })} />
+</article>

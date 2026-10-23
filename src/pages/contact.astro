@@ -1,0 +1,440 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TourCard from "../components/TourCard.astro";
+import siteData from "../data/sites/lankawayfinder.json";
+
+const { site, regions, tours } = siteData;
+const sampleTours = tours.slice(0, 3);
+---
+
+<BaseLayout
+  title="Contact Dispatch Desk | LankaWayfinder.tours"
+  description="Get in touch with the LankaWayfinder route desk: corrections, gate opening inquiries, chauffeur network bookings, and partnership inquiries."
+  currentPath="/contact/"
+>
+  <!-- Page Header -->
+  <section class="section" style="padding-top:clamp(3.5rem, 6vw, 5rem);padding-bottom:clamp(2.5rem, 4vw, 3.5rem);">
+    <div class="container" style="max-width:960px;">
+      <!-- Breadcrumbs -->
+      <div style="font-size:var(--step-small);color:var(--ink-muted);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;" data-ui>
+        <a href="/" style="color:var(--accent-amber);">Field Dispatch</a>
+        <span>/</span>
+        <span>Desk</span>
+        <span>/</span>
+        <span style="color:var(--ink-primary);font-weight:600;">Contact</span>
+      </div>
+
+      <h1 class="animate-enter" style="margin-bottom:1rem;">Contact Dispatch Desk</h1>
+      <p class="lead animate-enter" style="max-width:58ch;margin-bottom:2.5rem;">
+        Route corrections, gate timing questions, and partnership inquiries — we review all correspondence.
+      </p>
+
+      <!-- JSON-LD BreadcrumbList & ContactPage Schema -->
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://lankawayfinder.tours/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Contact Dispatch Desk",
+                "item": "https://lankawayfinder.tours/contact/"
+              }
+            ]
+          },
+          {
+            "@type": "ContactPage",
+            "name": "Contact LankaWayfinder Dispatch Desk",
+            "description": "Route corrections, national park gate timing inquiries, and chauffeur network bookings across Sri Lanka.",
+            "url": "https://lankawayfinder.tours/contact/"
+          }
+        ]
+      })} />
+
+      <!-- Editorial Photo Banner: Demodara Nine Arch Bridge Transit Corridor -->
+      <div class="animate-shutter" style="border-radius:var(--radius-lg);overflow:hidden;background-color:var(--bg-surface);aspect-ratio:21/9;">
+        <img
+          src="https://images.unsplash.com/photo-1566296314736-6eaac1ca0cb9?auto=format&fit=crop&w=1600&q=85"
+          alt="Mainline passenger train crossing Demodara Nine Arch Bridge in Ella"
+          fetchpriority="high"
+          width="1200"
+          height="514"
+          style="width:100%;height:100%;object-fit:cover;"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 Primary Communication Channels -->
+  <section class="section--surface" style="padding-top:clamp(3rem, 5vw, 4.5rem);padding-bottom:clamp(4rem, 6vw, 6rem);">
+    <div class="container" style="max-width:960px;">
+      <h2 class="visually-hidden">Communication Channels</h2>
+      <div class="channels-grid animate-enter" data-ui>
+        <!-- Channel 1: Official GetYourGuide Phone Support -->
+        <div class="channel-card">
+          <div class="channel-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+          </div>
+          <h3>Official Phone Support</h3>
+          <p>
+            24/7 direct telephone lines for urgent tour assistance, meeting spot directions, and immediate booking queries.
+          </p>
+          <div style="margin-top:auto;display:flex;flex-direction:column;gap:0.4rem;" data-ui>
+            <a href="tel:+18559571272" class="btn btn--sm btn--primary">
+              <span>US/CA: +1 855 957 1272</span>
+              <span>↗</span>
+            </a>
+            <a href="tel:+493056839445" class="btn btn--sm btn--secondary">
+              <span>Intl: +49 30 56839445</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Channel 2: Official GetYourGuide WhatsApp Helpdesk -->
+        <div class="channel-card channel-card--highlight">
+          <div class="channel-icon" style="color:var(--accent-gold);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+          </div>
+          <h3>Official WhatsApp Desk</h3>
+          <p>
+            Instant text messaging with GetYourGuide's customer service for mobile voucher support and departure updates.
+          </p>
+          <div style="margin-top:auto;" data-ui>
+            <a href="https://wa.me/4915123457858" target="_blank" rel="noopener noreferrer" class="btn btn--sm btn--primary">
+              <span>WhatsApp +49 151 23457858</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Channel 3: Official GetYourGuide Help Centre & Live Chat -->
+        <div class="channel-card">
+          <div class="channel-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <h3>24/7 Help Centre &amp; Chat</h3>
+          <p>
+            Self-service 24-hour free cancellation, instant date changes, and live agent chat directly on GetYourGuide.
+          </p>
+          <div style="margin-top:auto;" data-ui>
+            <a href={`https://www.getyourguide.com/contact/?partner_id=${site.partnerId}&utm_medium=online_publisher&cmp=${site.campaignPrefix}_contact_help`} target="_blank" rel="noopener noreferrer" class="btn btn--sm btn--secondary">
+              <span>GetYourGuide Help Centre</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Before You Write Triaging Guidance -->
+      <div class="guidance-section animate-enter" data-ui>
+        <div class="guidance-block animate-enter">
+          <h2>Before You Write</h2>
+          <div class="guidance-callout">
+            <p>
+              <strong>Existing tour bookings:</strong> If your question is about a safari or tour you have already booked (changing a departure date, cancelling for a full refund, or finding your jeep tracker's exact meeting spot), please contact the tour operator or GetYourGuide directly through your booking voucher or the GetYourGuide app.
+            </p>
+            <p style="margin-bottom:0;">
+              We are an independent field publication and route concierge; we have no direct access to individual customer booking databases or ticketing systems.
+            </p>
+          </div>
+
+          <div style="margin-top:1.5rem;">
+            <p>
+              <strong>Route &amp; itinerary planning:</strong> Most questions regarding travel times, luggage handling during safaris, and train connections are answered in our regional corridor dossiers:
+            </p>
+            <div class="corridor-pills" data-ui>
+              {regions.map((reg) => (
+                <a href={`/${reg.slug}/`} class="btn btn--sm btn--secondary">
+                  <span>{reg.name}</span>
+                  <span>→</span>
+                </a>
+              ))}
+              <a href="/getting-around/" class="btn btn--sm btn--primary">
+                <span>Transfer Protocols</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- What We Love to Hear About -->
+        <div class="guidance-block animate-enter">
+          <h2>What We Want to Hear About</h2>
+          <ul class="feedback-list">
+            <li>
+              <strong>On-the-ground gate changes:</strong> Price, fee, ticket queue, or entry-rule updates observed at Palatupana (Yala), Udawalawe, or Minneriya gates.
+            </li>
+            <li>
+              <strong>Driver &amp; tracker recommendations:</strong> Exceptional local naturalists, wildlife trackers, or licensed chauffeurs you feel deserve an inspection.
+            </li>
+            <li>
+              <strong>Highway &amp; train updates:</strong> Expressway toll changes, roadworks, or Sri Lanka Railways observation carriage schedule adjustments.
+            </li>
+            <li>
+              <strong>Partnership &amp; press:</strong> Tourism board collaborations, media inquiries, and verified operator integrations.
+            </li>
+          </ul>
+          <p style="font-size:var(--step-small);color:var(--ink-muted);margin-top:1rem;">
+            We aim to reply to all editorial correspondence within one business day (Colombo time UTC+5:30).
+          </p>
+        </div>
+
+        <!-- Direct Message Dispatch Form -->
+        <div class="guidance-block animate-enter">
+          <h2>Send a Dispatch Message</h2>
+          <form class="contact-form" onsubmit="event.preventDefault(); alert('Thank you for your dispatch. Our Colombo team reviews all correspondence and will reply via email within 1 business day.');">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-name">Your Name</label>
+                <input type="text" id="contact-name" name="name" required placeholder="e.g. David Harrison" aria-label="Your Name" />
+              </div>
+              <div class="form-group">
+                <label for="contact-email">Email Address</label>
+                <input type="email" id="contact-email" name="email" required placeholder="e.g. david@example.com" aria-label="Email Address" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-topic">Message Subject</label>
+              <select id="contact-topic" name="topic" required aria-label="Message Subject">
+                <option value="gate-correction">On-the-ground gate / price correction</option>
+                <option value="chauffeur-booking">Private chauffeur road transfer inquiry</option>
+                <option value="safari-advice">Wildlife safari route question</option>
+                <option value="partnership">Press, media or partnership inquiry</option>
+                <option value="other">Other general dispatch query</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-message">Your Message</label>
+              <textarea id="contact-message" name="message" rows="5" required placeholder="Include specific dates, vehicle requirements, or route observations..."></textarea>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+              <button type="submit" class="btn btn--primary">
+                <span>Send to Dispatch Desk</span>
+                <span>→</span>
+              </button>
+              <span style="font-size:var(--step-small);color:var(--ink-muted);">
+                Encrypted &amp; delivered directly to dispatch@lankawayfinder.com
+              </span>
+            </div>
+          </form>
+        </div>
+
+        <!-- Popular Safari Experiences (GiliAir style cross-sell) -->
+        <div class="guidance-block animate-enter" style="margin-top:1.5rem;">
+          <h2>Featured Island Experiences</h2>
+          <p>
+            Explore top-rated wildlife and cultural excursions curated by our route concierges:
+          </p>
+          <div class="tours-grid" style="margin-top:1rem;">
+            {sampleTours.map((tour) => (
+              <div class="animate-enter">
+                <TourCard tour={tour} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .channels-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .channels-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .channel-card {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    padding: 1.75rem;
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: transform 0.2s ease;
+  }
+
+  .channel-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .channel-card--highlight {
+    background-color: #FFFFFF;
+    border: 2px solid var(--accent-amber);
+  }
+
+  .channel-icon {
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+  }
+
+  .channel-card h3 {
+    font-size: 1.25rem;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .channel-card p {
+    font-size: var(--step-body);
+    color: var(--ink-muted);
+    line-height: 1.55;
+    margin: 0 0 1.25rem 0;
+  }
+
+  .guidance-section {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+  }
+
+  .guidance-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .guidance-block h2 {
+    font-size: clamp(1.6rem, 1.4rem + 1vw, 2.1rem);
+    margin: 0;
+  }
+
+  .guidance-callout {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--accent-amber);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .guidance-callout p {
+    margin: 0;
+    font-size: var(--step-body);
+    color: var(--ink-body);
+    line-height: 1.6;
+  }
+
+  .corridor-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .feedback-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .feedback-list li {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius);
+    font-size: var(--step-body);
+    color: var(--ink-body);
+    line-height: 1.6;
+  }
+
+  .feedback-list strong {
+    color: var(--ink-primary);
+  }
+
+  /* Contact Form Styles */
+  .contact-form {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 600px) {
+    .form-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .form-group label {
+    font-size: var(--step-small);
+    color: var(--ink-primary);
+    font-weight: 600;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background-color: #FFFFFF;
+    color: var(--ink-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    font-family: inherit;
+    font-size: var(--step-body);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: 2px solid var(--accent-amber);
+    outline-offset: 1px;
+    border-color: var(--accent-amber);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+</style>

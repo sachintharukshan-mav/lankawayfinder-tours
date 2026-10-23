@@ -1,0 +1,118 @@
+---
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  currentPath?: string;
+  noindex?: boolean;
+  ogImage?: string;
+  ogType?: string;
+}
+
+const {
+  title = "LankaWayfinder.tours | Sri Lanka Safaris, Chauffeurs & Island Guide (2026)",
+  description = "Independent Sri Lanka route coordination: verified 4x4 wildlife safaris in Yala & Udawalawe, Kandy-to-Ella train solutions, and fixed-rate chauffeur transfers.",
+  currentPath = "/",
+  noindex = false,
+  ogImage = "https://images.unsplash.com/photo-1566296314736-6eaac1ca0cb9?auto=format&fit=crop&w=1200&q=80",
+  ogType = "website",
+} = Astro.props;
+
+const rawPath = (currentPath || "/").split("?")[0].split("#")[0];
+const normalizedPath = rawPath === "/" ? "/" : `${rawPath.replace(/\/+$/, "")}/`;
+const canonicalUrl = `https://lankawayfinder.tours${normalizedPath}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {!noindex && <link rel="canonical" href={canonicalUrl} />}
+
+    <!-- Google Fonts: Playfair Display + Inter (matching giliair.com aesthetic) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Social & OpenGraph Metadata -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    {!noindex && <meta property="og:url" content={canonicalUrl} />}
+    <meta property="og:site_name" content="LankaWayfinder" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta
+      name="robots"
+      content={
+        noindex
+          ? "noindex, follow"
+          : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+      }
+    />
+    <meta name="theme-color" content="#FDF9F2" />
+
+    <!-- Organization & WebSite JSON-LD Schema -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://lankawayfinder.tours/#website",
+          "url": "https://lankawayfinder.tours/",
+          "name": "LankaWayfinder",
+          "description": "Independent Sri Lanka Safaris, Chauffeur Transfers & Island Travel Guide",
+          "publisher": {
+            "@id": "https://lankawayfinder.tours/#organization"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://lankawayfinder.tours/#organization",
+          "name": "LankaWayfinder",
+          "url": "https://lankawayfinder.tours/",
+          "logo": "https://lankawayfinder.tours/favicon.svg"
+        }
+      ]
+    })} />
+
+    <!-- Official GetYourGuide Partner Widget Script -->
+    <script async defer src="https://widget.getyourguide.com/dist/pa.umd.production.min.js"></script>
+  </head>
+  <body id="top">
+    <!-- Skip to content for accessibility -->
+    <a href="#main" class="sr-only focus:not-sr-only focus:p-4 focus:bg-white focus:text-[#16252B] focus:absolute focus:z-50 focus:rounded">
+      Skip to content
+    </a>
+
+    <!-- Sticky Navigation Bar (Matching user reference header) -->
+    <Navigation currentPath={normalizedPath} />
+
+    <!-- Main Page Content -->
+    <main id="main">
+      <slot />
+    </main>
+
+    <!-- Site Footer -->
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,521 @@
+---
+// Safari Cost Calculator - Independent DWC Gate Permit & Jeep Fee Estimator
+interface Props {
+  defaultPark?: "yala" | "udawalawe" | "wilpattu" | "minneriya";
+}
+
+const { defaultPark = "yala" } = Astro.props;
+---
+
+<div class="safari-calc" id="safari-calc" data-ui>
+  <div class="safari-calc__header">
+    <div class="safari-calc__badge">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+      </svg>
+      <span>Real-World Cost Engine</span>
+    </div>
+    <h3 class="safari-calc__title">Sri Lanka Safari Total Gate Cost vs Jeep Calculator</h3>
+    <p class="safari-calc__subtitle">
+      Calculate the exact Department of Wildlife Conservation (DWC) foreign entry permits, 15% VAT, and private 4x4 jeep hire fees before you arrive at the gate.
+    </p>
+  </div>
+
+  <form class="safari-calc__form" id="safari-calc-form" onsubmit="return false;">
+    <fieldset class="safari-calc__fieldset">
+      <legend class="safari-calc__legend">1. Select National Park</legend>
+      <div class="safari-calc__radios">
+        <label class="safari-calc__radio-label">
+          <input type="radio" name="park" value="yala" checked={defaultPark === "yala"} />
+          <span class="safari-calc__radio-box">
+            <strong>Yala National Park</strong>
+            <small>Block 1 &amp; 2 (Leopards, Sloth Bears)</small>
+          </span>
+        </label>
+        <label class="safari-calc__radio-label">
+          <input type="radio" name="park" value="udawalawe" checked={defaultPark === "udawalawe"} />
+          <span class="safari-calc__radio-box">
+            <strong>Udawalawe National Park</strong>
+            <small>Guaranteed Wild Elephants &amp; Open Grasslands</small>
+          </span>
+        </label>
+        <label class="safari-calc__radio-label">
+          <input type="radio" name="park" value="wilpattu" checked={defaultPark === "wilpattu"} />
+          <span class="safari-calc__radio-box">
+            <strong>Wilpattu National Park</strong>
+            <small>Dense Teak Forests &amp; Natural Villus</small>
+          </span>
+        </label>
+        <label class="safari-calc__radio-label">
+          <input type="radio" name="park" value="minneriya" checked={defaultPark === "minneriya"} />
+          <span class="safari-calc__radio-box">
+            <strong>Minneriya / Kaudulla</strong>
+            <small>The Great Elephant Gathering Corridor</small>
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="safari-calc__grid-2">
+      <fieldset class="safari-calc__fieldset">
+        <legend class="safari-calc__legend">2. Party Size (Foreign Visitors)</legend>
+        <div class="safari-calc__counter-group">
+          <div class="safari-calc__counter-item">
+            <label for="safari-adults" class="safari-calc__counter-label">Adults (Age 12+)</label>
+            <div class="safari-calc__input-wrap">
+              <input type="number" id="safari-adults" name="adults" min="1" max="12" value="2" class="safari-calc__input" />
+              <span class="safari-calc__input-unit">$35 / adult</span>
+            </div>
+          </div>
+          <div class="safari-calc__counter-item">
+            <label for="safari-children" class="safari-calc__counter-label">Children (Age 6–11)</label>
+            <div class="safari-calc__input-wrap">
+              <input type="number" id="safari-children" name="children" min="0" max="8" value="0" class="safari-calc__input" />
+              <span class="safari-calc__input-unit">$18 / child</span>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="safari-calc__fieldset">
+        <legend class="safari-calc__legend">3. Safari Duration &amp; 4x4 Jeep</legend>
+        <div class="safari-calc__radios">
+          <label class="safari-calc__radio-label">
+            <input type="radio" name="duration" value="half" checked />
+            <span class="safari-calc__radio-box">
+              <strong>Half-Day Safari (3.5 – 4 Hours)</strong>
+              <small>Morning (06:00) or Afternoon (14:30)</small>
+            </span>
+          </label>
+          <label class="safari-calc__radio-label">
+            <input type="radio" name="duration" value="full" />
+            <span class="safari-calc__radio-box">
+              <strong>Full-Day Safari (11 – 12 Hours)</strong>
+              <small>Dawn to Dusk with Midday Rest Stop</small>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
+  </form>
+
+  <!-- Live Output Results Area -->
+  <div class="safari-calc__results" aria-live="polite" id="safari-results">
+    <div class="safari-calc__breakdown">
+      <h4 class="safari-calc__breakdown-title">Itemized Gate Fee Breakdown</h4>
+      <div class="safari-calc__row">
+        <span>Foreign Adult Permits (<span id="out-adult-count">2</span> &times; $35 USD)</span>
+        <strong id="out-adult-total">$70.00</strong>
+      </div>
+      <div class="safari-calc__row" id="row-child-permits" style="display:none;">
+        <span>Foreign Child Permits (<span id="out-child-count">0</span> &times; $18 USD)</span>
+        <strong id="out-child-total">$0.00</strong>
+      </div>
+      <div class="safari-calc__row">
+        <span>Park Vehicle Entry &amp; DWC Service Surcharge</span>
+        <strong id="out-vehicle-fee">$5.50</strong>
+      </div>
+      <div class="safari-calc__row">
+        <span>Government VAT (15% on official permit fees)</span>
+        <strong id="out-vat-fee">$11.33</strong>
+      </div>
+      <div class="safari-calc__row">
+        <span>Private Modified 4x4 Jeep &amp; Driver Hire</span>
+        <strong id="out-jeep-fee">$45.00</strong>
+      </div>
+      <div class="safari-calc__row">
+        <span>Recommended Wildlife Tracker Tip (Cash at Gate)</span>
+        <strong id="out-tip-fee">$10.00</strong>
+      </div>
+      <div class="safari-calc__divider"></div>
+      <div class="safari-calc__row safari-calc__row--total">
+        <div>
+          <strong>Total Estimated Self-Booking Cost:</strong>
+          <span class="safari-calc__fx-rate">Approx. <span id="out-lkr-total">42,500 LKR</span> (cash needed at counter)</span>
+        </div>
+        <div class="safari-calc__total-price" id="out-grand-total">$141.83 USD</div>
+      </div>
+    </div>
+
+    <!-- Smart All-Inclusive Recommendation Box -->
+    <div class="safari-calc__recommendation">
+      <div class="safari-calc__rec-header">
+        <span class="safari-calc__rec-badge">Best Practical Value</span>
+        <h5 class="safari-calc__rec-title">Why Pre-Clearing on GetYourGuide Saves Money &amp; Time</h5>
+      </div>
+      <p class="safari-calc__rec-text">
+        At Palatupana (Yala) and Udawalawe gates, self-booking travelers queue 30–45 minutes at 05:45 AM while ticket terminals struggle with card signal. The curated GetYourGuide All-Inclusive package pre-purchases official permits, includes the private 4x4, licensed driver-tracker, hotel pickup, and provides <strong>100% free cancellation up to 24 hours prior</strong>.
+      </p>
+      <div class="safari-calc__rec-actions">
+        <a
+          id="safari-gyg-btn"
+          href="https://www.getyourguide.com/tissamaharama-l147871/yala-safari-morningevening-7hours-12-hours-incl-meals-t776345/?partner_id=QOSQVIQ&utm_medium=online_publisher&cmp=lwf_dispatch_calc_yala"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn--primary"
+          style="width:100%;justify-content:center;"
+        >
+          <span>View Pre-Cleared All-Inclusive Safari on GetYourGuide</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initSafariCalc() {
+    const form = document.getElementById("safari-calc-form") as HTMLFormElement | null;
+    if (!form) return;
+
+    const adultsInput = document.getElementById("safari-adults") as HTMLInputElement;
+    const childrenInput = document.getElementById("safari-children") as HTMLInputElement;
+    const gygBtn = document.getElementById("safari-gyg-btn") as HTMLAnchorElement;
+
+    const outAdultCount = document.getElementById("out-adult-count")!;
+    const outAdultTotal = document.getElementById("out-adult-total")!;
+    const rowChildPermits = document.getElementById("row-child-permits")!;
+    const outChildCount = document.getElementById("out-child-count")!;
+    const outChildTotal = document.getElementById("out-child-total")!;
+    const outVehicleFee = document.getElementById("out-vehicle-fee")!;
+    const outVatFee = document.getElementById("out-vat-fee")!;
+    const outJeepFee = document.getElementById("out-jeep-fee")!;
+    const outGrandTotal = document.getElementById("out-grand-total")!;
+    const outLkrTotal = document.getElementById("out-lkr-total")!;
+
+    const USD_TO_LKR = 300; // Stable benchmark rate
+
+    const gygLinks: Record<string, string> = {
+      yala: "https://www.getyourguide.com/tissamaharama-l147871/yala-safari-morningevening-7hours-12-hours-incl-meals-t776345/?partner_id=QOSQVIQ&utm_medium=online_publisher&cmp=lwf_dispatch_calc_yala",
+      udawalawe: "https://www.getyourguide.com/udawalawa-l190151/udawalawe-private-udawalawe-national-park-safari-tour-t318142/?partner_id=QOSQVIQ&utm_medium=online_publisher&cmp=lwf_dispatch_calc_udawalawe",
+      wilpattu: "https://www.getyourguide.com/sri-lanka-l169049/?partner_id=QOSQVIQ&utm_medium=online_publisher&cmp=lwf_dispatch_calc_wilpattu",
+      minneriya: "https://www.getyourguide.com/anuradhapura-l32218/minneriya-national-park-private-safari-sri-lanka-t829332/?partner_id=QOSQVIQ&utm_medium=online_publisher&cmp=lwf_dispatch_calc_minneriya"
+    };
+
+    function recalculate() {
+      const parkRadio = form?.querySelector('input[name="park"]:checked') as HTMLInputElement;
+      const durationRadio = form?.querySelector('input[name="duration"]:checked') as HTMLInputElement;
+
+      const park = parkRadio ? parkRadio.value : "yala";
+      const isFullDay = durationRadio ? durationRadio.value === "full" : false;
+
+      const adults = Math.max(1, parseInt(adultsInput.value, 10) || 1);
+      const children = Math.max(0, parseInt(childrenInput.value, 10) || 0);
+
+      // Official DWC standard foreign pricing in USD
+      const adultPermitRate = 35;
+      const childPermitRate = 18;
+      const vehicleEntryFee = 5.50; // standard jeep park entry levy
+      const trackerTip = isFullDay ? 18.00 : 10.00;
+
+      // Jeep rates based on duration and park
+      let jeepRate = isFullDay ? 85 : 45;
+      if (park === "udawalawe") {
+        jeepRate = isFullDay ? 75 : 40;
+      } else if (park === "wilpattu") {
+        jeepRate = isFullDay ? 95 : 55;
+      }
+
+      const totalAdultPermits = adults * adultPermitRate;
+      const totalChildPermits = children * childPermitRate;
+      const subtotalGovernment = totalAdultPermits + totalChildPermits + vehicleEntryFee;
+      const vatAmount = subtotalGovernment * 0.15; // 15% VAT on DWC services
+
+      const grandTotal = subtotalGovernment + vatAmount + jeepRate + trackerTip;
+      const lkrAmount = Math.round(grandTotal * USD_TO_LKR);
+
+      // Update DOM
+      outAdultCount.textContent = adults.toString();
+      outAdultTotal.textContent = `$${totalAdultPermits.toFixed(2)}`;
+
+      if (children > 0) {
+        rowChildPermits.style.display = "flex";
+        outChildCount.textContent = children.toString();
+        outChildTotal.textContent = `$${totalChildPermits.toFixed(2)}`;
+      } else {
+        rowChildPermits.style.display = "none";
+      }
+
+      outVehicleFee.textContent = `$${vehicleEntryFee.toFixed(2)}`;
+      outVatFee.textContent = `$${vatAmount.toFixed(2)}`;
+      outJeepFee.textContent = `$${jeepRate.toFixed(2)}`;
+      outGrandTotal.textContent = `$${grandTotal.toFixed(2)} USD`;
+      outLkrTotal.textContent = `${lkrAmount.toLocaleString()} LKR`;
+
+      if (gygBtn && gygLinks[park]) {
+        gygBtn.href = gygLinks[park];
+      }
+    }
+
+    form.addEventListener("change", recalculate);
+    adultsInput.addEventListener("input", recalculate);
+    childrenInput.addEventListener("input", recalculate);
+
+    recalculate();
+  }
+
+  // Support both DOMContentLoaded and Astro view transitions
+  document.addEventListener("DOMContentLoaded", initSafariCalc);
+  document.addEventListener("astro:page-load", initSafariCalc);
+</script>
+
+<style>
+  .safari-calc {
+    background: #FFFFFF;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    padding: clamp(1.75rem, 3.5vw, 2.75rem);
+    box-shadow: 0 4px 20px rgba(22, 37, 43, 0.04);
+    margin: 2.5rem 0;
+  }
+
+  .safari-calc__header {
+    margin-bottom: 2rem;
+  }
+
+  .safari-calc__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-amber);
+    background: #FDF9F2;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(220, 139, 25, 0.25);
+    margin-bottom: 0.75rem;
+  }
+
+  .safari-calc__title {
+    font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+    color: var(--ink-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .safari-calc__subtitle {
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 780px;
+  }
+
+  .safari-calc__fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 1.75rem 0;
+  }
+
+  .safari-calc__legend {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--ink-primary);
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .safari-calc__radios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .safari-calc__radio-label {
+    position: relative;
+    cursor: pointer;
+    display: block;
+  }
+
+  .safari-calc__radio-label input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .safari-calc__radio-box {
+    display: flex;
+    flex-direction: column;
+    padding: 0.85rem 1rem;
+    background: var(--bg-page);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+  }
+
+  .safari-calc__radio-box strong {
+    font-size: 0.9375rem;
+    color: var(--ink-primary);
+    margin-bottom: 0.2rem;
+  }
+
+  .safari-calc__radio-box small {
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+  }
+
+  .safari-calc__radio-label input[type="radio"]:checked + .safari-calc__radio-box {
+    background: #FFFFFF;
+    border-color: var(--accent-amber);
+    box-shadow: 0 0 0 1.5px var(--accent-amber);
+  }
+
+  .safari-calc__radio-label input[type="radio"]:focus-visible + .safari-calc__radio-box {
+    outline: 2px solid var(--accent-amber);
+    outline-offset: 2px;
+  }
+
+  .safari-calc__grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .safari-calc__counter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .safari-calc__counter-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-page);
+    padding: 0.6rem 0.85rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .safari-calc__counter-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+    cursor: pointer;
+  }
+
+  .safari-calc__input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .safari-calc__input {
+    width: 60px;
+    padding: 0.35rem 0.5rem;
+    border: 1.5px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    text-align: center;
+    background: #FFFFFF;
+    color: var(--ink-primary);
+  }
+
+  .safari-calc__input:focus {
+    outline: none;
+    border-color: var(--accent-amber);
+  }
+
+  .safari-calc__input-unit {
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+
+  .safari-calc__results {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
+    background: var(--bg-page);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  }
+
+  @media (max-width: 860px) {
+    .safari-calc__results {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .safari-calc__breakdown-title {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    color: var(--ink-primary);
+  }
+
+  .safari-calc__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.875rem;
+    color: var(--ink-body);
+    margin-bottom: 0.65rem;
+  }
+
+  .safari-calc__divider {
+    height: 1px;
+    background: var(--border-light);
+    margin: 1rem 0;
+  }
+
+  .safari-calc__row--total {
+    margin-bottom: 0;
+  }
+
+  .safari-calc__row--total strong {
+    font-size: 0.95rem;
+    color: var(--ink-primary);
+    display: block;
+  }
+
+  .safari-calc__fx-rate {
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+  }
+
+  .safari-calc__total-price {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--accent-amber);
+  }
+
+  .safari-calc__recommendation {
+    background: #FFFFFF;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(220, 139, 25, 0.35);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .safari-calc__rec-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: #FFF5E5;
+    color: #9C5803;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.4rem;
+  }
+
+  .safari-calc__rec-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--ink-primary);
+  }
+
+  .safari-calc__rec-text {
+    font-size: 0.84rem;
+    color: var(--ink-muted);
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+</style>

@@ -1,0 +1,41 @@
+# ======================================================================
+# LankaWayfinder.tours — LiteSpeed / Apache SEO & GSC Canonical Rules
+# Zero Redirect Chains • Strict Trailing Slash • Fast Core Web Vitals
+# ======================================================================
+
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Single-hop HTTPS + non-www canonicalization (prevents redirect chains in GSC)
+  RewriteCond %{HTTPS} off [OR]
+  RewriteCond %{HTTP_HOST} ^www\.lankawayfinder\.tours$ [NC]
+  RewriteRule ^ https://lankawayfinder.tours%{REQUEST_URI} [L,R=301]
+
+  # 2. Strip explicit /index.html to canonical trailing-slash directory URL
+  RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html[\s?] [NC]
+  RewriteRule ^(.*/)?index\.html$ https://lankawayfinder.tours/$1 [L,R=301]
+
+  # 3. Enforce trailing slash on extensionless routes (excluding real files like /404.html, /robots.txt, /llms.txt)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_URI} !\.[a-zA-Z0-9]{1,5}$
+  RewriteCond %{REQUEST_URI} !/$
+  RewriteRule ^(.*[^/])$ https://lankawayfinder.tours/$1/ [L,R=301]
+</IfModule>
+
+# Fast Indexing & Cache-Control Headers for Core Web Vitals (LCP / INP)
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+  <FilesMatch "\.(webp|webm|jpg|jpeg|png|svg|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+</IfModule>

@@ -1,0 +1,110 @@
+---
+import siteData from "../data/sites/lankawayfinder.json";
+const { site, regions } = siteData;
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Col 1: Brand & Partner Badge -->
+      <div>
+        <a href="/" class="brand-link" style="margin-bottom:1.25rem;" aria-label="LankaWayfinder Home">
+          <div class="brand-icon" style="background:#243B45;" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" stroke="#FDF9F2" stroke-width="1.75"/>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="#DC8B19" stroke="#DC8B19"/>
+            </svg>
+          </div>
+          <span class="brand-text" style="color:#FFFFFF;">
+            LankaWayfinder<span class="brand-suffix">.tours</span>
+          </span>
+        </a>
+
+        <p style="font-size:0.9375rem;line-height:1.6;color:var(--ink-muted-on-dark);margin-bottom:1.5rem;max-width:34ch;">
+          Independent Sri Lanka route coordination, verified 4x4 wildlife safaris, and licensed private air-conditioned chauffeur transfers.
+        </p>
+
+        <!-- Official GetYourGuide Partner Badge -->
+        <div style="display:inline-flex;align-items:center;gap:0.6rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);padding:0.5rem 0.85rem;border-radius:9999px;font-size:0.8125rem;color:#FDF9F2;">
+          <span style="width:8px;height:8px;border-radius:50%;background:#DC8B19;display:inline-block;"></span>
+          <span style="font-weight:600;">GetYourGuide Authorised Partner</span>
+        </div>
+      </div>
+
+      <!-- Col 2: Experiences & Tours -->
+      <div>
+        <div class="footer-heading">Experiences &amp; Tours</div>
+        <ul class="footer-links">
+          <li><a href="/tours/">All Verified Tours</a></li>
+          <li><a href="/destinations/">Things to Do</a></li>
+          <li><a href="/where-to-stay/">Where to Stay</a></li>
+          <li><a href="/getting-around/">Getting Around &amp; Chauffeurs</a></li>
+          <li><a href="/tours/#safari">Wildlife Safaris</a></li>
+          <li><a href="/tours/#culture">Cultural Citadels</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Regional Corridors -->
+      <div>
+        <div class="footer-heading">Island Corridors</div>
+        <ul class="footer-links">
+          {regions.map((reg) => (
+            <li>
+              <a href={`/${reg.slug}/`}>
+                {reg.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Col 4: Insider Intelligence & Dispatch -->
+      <div>
+        <div class="footer-heading">Travel Guides &amp; Desk</div>
+        <ul class="footer-links">
+          <li><a href="/travel-guide/">Travel Guides &amp; Tips</a></li>
+          <li><a href="/getting-around/#pricing">Route Pricing Ledger</a></li>
+          <li><a href="/contact/">Contact Dispatch Desk</a></li>
+          <li><a href="/affiliate-disclosure/">Affiliate Disclosure</a></li>
+          <li style="margin-top:0.75rem;">
+            <a
+              href={`https://www.getyourguide.com/contact/?partner_id=${site.partnerId}&utm_medium=online_publisher&cmp=${site.campaignPrefix}_footer_help`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style="display:inline-flex;align-items:center;gap:0.4rem;color:#F3B755;font-weight:600;"
+            >
+              <span>GetYourGuide 24/7 Help Centre</span>
+              <span>↗</span>
+            </a>
+          </li>
+          <li style="font-size:0.8125rem;color:var(--ink-muted-on-dark);">
+            Toll-Free (US/CA): <a href="tel:+18559571272" style="color:#FFFFFF;text-decoration:underline;">+1 855 957 1272</a>
+          </li>
+          <li style="font-size:0.8125rem;color:var(--ink-muted-on-dark);">
+            International: <a href="tel:+493056839445" style="color:#FFFFFF;text-decoration:underline;">+49 30 56839445</a>
+          </li>
+          <li style="font-size:0.8125rem;margin-top:0.25rem;">
+            <a
+              href="https://wa.me/4915123457858"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="color:#F3B755;text-decoration:underline;"
+            >
+              Official WhatsApp: +49 151 23457858
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Colophon -->
+    <div class="footer-bottom">
+      <div style="max-width:76ch;line-height:1.5;">
+        We partner with GetYourGuide for verified tours and Trip.com for hotel stays. When you book via links on this site, we may earn an affiliate commission at no additional cost to you.
+      </div>
+      <div>
+        &copy; {new Date().getFullYear()} LankaWayfinder.tours. All rights reserved.
+      </div>
+    </div>
+  </div>
+</footer>

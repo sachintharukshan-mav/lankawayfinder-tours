@@ -1,0 +1,369 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TourCard from "../components/TourCard.astro";
+import siteData from "../data/sites/lankawayfinder.json";
+
+export function getStaticPaths() {
+  const { regions, tours, routePricing } = siteData;
+
+  return regions.map((region) => {
+    const regionTours = tours.filter((t) => t.regionSlug === region.slug);
+    const relatedRoutes = routePricing.filter((r) => {
+      const keyword = region.slug.split("-")[0];
+      return (
+        r.from.toLowerCase().includes(keyword) ||
+        r.to.toLowerCase().includes(keyword) ||
+        r.via.toLowerCase().includes(keyword)
+      );
+    });
+
+    return {
+      params: { slug: region.slug },
+      props: { region, regionTours, relatedRoutes, allRegions: regions },
+    };
+  });
+}
+
+const { region, regionTours, relatedRoutes, allRegions } = Astro.props;
+
+// Sort strictly by highest rated first
+const curatedRegionTours = [...regionTours].sort((a, b) => b.ratingScore - a.ratingScore);
+
+const otherRegions = allRegions.filter((r) => r.slug !== region.slug);
+
+const regionalFaqs: Record<string, Array<{ q: string; a: string }>> = {
+  "ella-hill-country": [
+    {
+      q: "How can I book Kandy to Ella train tickets if they are sold out online?",
+      a: "The Sri Lanka Railways online portal often encounters international SMS/OTP payment gateway failures and 1st/2nd class reserved observation seats sell out 30 days ahead. To secure guaranteed seats, book through licensed travel agencies on GetYourGuide who maintain reserved tourist allocations, or take our scenic road transfer to Nanu Oya station and board the observation carriage for the dramatic mountain descent to Ella."
+    },
+    {
+      q: "What happens to our luggage during the Kandy to Ella scenic train ride?",
+      a: "Carrying bulky suitcases on crowded Sri Lankan trains is inconvenient and poses a security risk on open racks. When you book a LankaWayfinder transfer connection, your private chauffeur transports your luggage securely in the air-conditioned car, drives ahead to Ella railway station, and meets you directly on the platform with your bags when your train arrives."
+    },
+    {
+      q: "What is the best way to travel from Ella to the southern beach coast?",
+      a: "The smartest route is our Transit Elephant Safari. On the 3.5-hour highway drive from Ella to Mirissa, Weligama, or Galle, your chauffeur pauses at Udawalawe National Park. Your luggage remains locked in the vehicle while you take a 3-hour private open-top 4x4 safari to observe wild elephant herds, arriving at your beach hotel by late afternoon."
+    }
+  ],
+  "yala-udawalawe": [
+    {
+      q: "Are national park entrance fees included in Yala and Udawalawe safari prices?",
+      a: "Standard roadside jeep rentals only cover the vehicle and driver; foreign travelers must separately pay the Department of Wildlife Conservation (DWC) entrance fee (approx. $30 to $35 USD + 15% VAT per adult) at the gate counter. LankaWayfinder features all-inclusive safari packages that bundle the private 4x4, experienced tracker, park entrance permits, and hotel transfers to avoid gate queues."
+    },
+    {
+      q: "Yala vs. Udawalawe: Which Sri Lanka safari is better?",
+      a: "Choose Yala National Park (Block 1) if your priority is tracking the Sri Lankan leopard and sloth bear in coastal thorn scrub. Choose Udawalawe National Park if your goal is guaranteed sightings of wild Asian elephant herds and mothers with calves around open water reservoirs. Udawalawe is also much less crowded and easier to reach on south coast transit routes."
+    },
+    {
+      q: "Is a morning or afternoon safari better in Yala?",
+      a: "Morning safaris (entry at 06:00 AM) offer the best opportunity to see leopards active on rock outcrops before the tropical midday heat sets in. Afternoon safaris (entry at 02:30 PM) offer dramatic sunset photography over reservoir lagoons and increased elephant activity around waterholes."
+    }
+  ],
+  "sigiriya-minneriya": [
+    {
+      q: "What is the entrance fee for Sigiriya Lion Rock for foreign tourists in 2026?",
+      a: "The official Central Cultural Fund (CCF) entrance fee for foreign non-SAARC visitors to Sigiriya Lion Rock Fortress is $36 USD (approx. 11,500 LKR). The ticket includes access to the 5th-century Water Gardens, Mirror Wall frescoes, Lion Paw terrace, and the sky citadel summit."
+    },
+    {
+      q: "When is the famous Minneriya Elephant Gathering?",
+      a: "The Elephant Gathering reaches its peak during the dry season from July through October, when up to 300 to 400 wild elephants congregate on the receding grasslands of Minneriya Tank reservoir. During other months, herds migrate between Kaudulla National Park and Hurulu Eco Park, all accessible via our private 4x4 safaris."
+    }
+  ],
+  "mirissa-galle": [
+    {
+      q: "When is the best season for blue whale watching in Mirissa?",
+      a: "The peak whale watching season off Mirissa and Dondra Head runs from late November through April, when the Indian Ocean is calm and the continental shelf trench attracts blue whales, sperm whales, and spinner dolphins. Ethical certified boat tours depart Mirissa Fisheries Harbour daily at 06:15 AM."
+    },
+    {
+      q: "Do I need an entrance ticket to explore Galle Dutch Fort?",
+      a: "No entrance ticket is required. Galle Fort is an active, open-access UNESCO World Heritage historic town. You can freely walk the 17th-century coral and granite sea ramparts, visit Flag Rock for sunset cliff jumps, and explore the cobblestone spice merchant streets without any entry fee."
+    }
+  ],
+  "colombo-cmb": [
+    {
+      q: "How much is a private taxi from Colombo Airport (CMB) to Galle or Sigiriya?",
+      a: "Fixed private chauffeur rates with LankaWayfinder are $62 USD to Galle/Mirissa (2.0 hours via Southern Expressway E01) and $78 USD to Sigiriya/Dambulla (3.5 hours via Central Expressway). Rates include airport arrivals greeting canopy meet, vehicle fuel, expressway tolls, and air conditioning."
+    },
+    {
+      q: "Is Colombo street food safe for foreign travelers?",
+      a: "Yes, when enjoyed at established high-turnover local stalls in Pettah and along Galle Face Green. Our guided Colombo Tuk-Tuk street food tours only patronize thoroughly vetted vendors renowned for freshly cooked kottu roti, egg hoppers, and spiced seafood fritters."
+    }
+  ]
+};
+
+const currentFaqs = regionalFaqs[region.slug] || [];
+---
+
+<BaseLayout
+  title={`${region.name} Safaris, Tours & Route Guide (2026) | LankaWayfinder`}
+  description={`${region.name} 2026 travel guide: verified 4x4 safaris, optimal gate hours (${region.bestTime}), road transfer fares, and luggage custody protocols.`}
+  currentPath={`/${region.slug}/`}
+  ogImage={region.image}
+>
+  <!-- Subpage Hero Header -->
+  <section class="section section--cream" style="padding-top:clamp(3.5rem, 6vw, 5rem);padding-bottom:clamp(3rem, 5vw, 4.5rem);">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <nav aria-label="Breadcrumb" style="font-size:0.875rem;color:var(--ink-muted);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;" data-ui>
+        <a href="/" style="color:var(--accent-amber);font-weight:500;">Home</a>
+        <span>/</span>
+        <a href="/destinations/" style="color:var(--accent-amber);font-weight:500;">Things to Do</a>
+        <span>/</span>
+        <span style="color:var(--ink-primary);font-weight:600;">{region.name}</span>
+      </nav>
+
+      <!-- JSON-LD BreadcrumbList & TouristDestination Schema -->
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://lankawayfinder.tours/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Things to Do",
+                "item": "https://lankawayfinder.tours/destinations/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": region.name,
+                "item": `https://lankawayfinder.tours/${region.slug}/`
+              }
+            ]
+          },
+          {
+            "@type": "TouristDestination",
+            "name": region.name,
+            "description": region.description,
+            "image": region.image,
+            "url": `https://lankawayfinder.tours/${region.slug}/`,
+            "touristType": ["Wildlife Safaris", "Scenic Highland Railways", "Heritage & Culture"]
+          }
+        ]
+      })} />
+
+      <div style="max-width:820px;">
+        <span class="section-pill">{region.tagline}</span>
+        <h1 style="margin-bottom:1rem;">{region.name}</h1>
+        <p class="section-subtitle" style="margin-bottom:2rem;">
+          {region.description}
+        </p>
+      </div>
+
+      <!-- Quick Field Logistics Bar -->
+      <div style="display:flex;flex-wrap:wrap;gap:1.5rem;font-size:0.875rem;color:var(--ink-muted);background-color:#FFFFFF;padding:1.25rem 1.5rem;border-radius:var(--radius);border:1px solid var(--border-subtle);margin-bottom:2.5rem;" data-ui>
+        <span>
+          <strong style="color:var(--ink-primary);">Optimal Hours:</strong> {region.bestTime}
+        </span>
+        <span>
+          <strong style="color:var(--ink-primary);">Key Access Gates:</strong> {region.keyGates}
+        </span>
+        <span>
+          <strong style="color:var(--ink-primary);">Transfer Sync:</strong> {region.transferNote}
+        </span>
+      </div>
+
+      <!-- Landscape Hero Photo -->
+      <div style="border-radius:var(--radius-lg);overflow:hidden;background-color:#FFFFFF;aspect-ratio:21/9;" data-ui>
+        <img
+          src={region.image}
+          alt={`${region.name} landscape in Sri Lanka`}
+          fetchpriority="high"
+          width="1200"
+          height="514"
+          style="width:100%;height:100%;object-fit:cover;"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Chauffeur Handover & Luggage Protocol Section -->
+  <section class="section section--white">
+    <div class="container">
+      <div style="background-color:var(--bg-surface-raised);padding:clamp(2rem, 4vw, 2.75rem);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:2rem;" data-ui>
+        <div style="max-width:70ch;">
+          <span class="section-pill">Luggage &amp; Transfer Protocol</span>
+          <h2 style="font-size:clamp(1.4rem, 2.2vw, 1.85rem);margin-bottom:0.6rem;">
+            {region.slug === "ella-hill-country" 
+              ? "Connecting Ella with the South Coast via Udawalawe Safari" 
+              : `Connecting Private Road Transfers with ${region.name}`}
+          </h2>
+          <p style="font-size:1rem;color:var(--ink-body);margin:0;line-height:1.6;">
+            {region.slug === "ella-hill-country"
+              ? "Traveling down from Ella to Mirissa, Weligama, or Galle? Our private chauffeur transfers allow you to pause midway at Udawalawe National Park for a 3-hour wild elephant safari. Your luggage remains locked in the air-conditioned car while you ride the 4x4 open-top jeep."
+              : "If you are connecting this tour with a private chauffeur transfer between hotels, your luggage remains safely locked inside our vehicle at the national park gate or train station while you complete your game drive or rail segment."}
+          </p>
+        </div>
+        <a
+          href={region.slug === "ella-hill-country" ? "/getting-around/#transit-safari" : "/getting-around/"}
+          class="btn btn--amber"
+          style="white-space:nowrap;"
+        >
+          <span>{region.slug === "ella-hill-country" ? "Explore Transit Safari" : "Chauffeur Details"}</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Regional Tours Grid -->
+  <section class="section section--cream" id="tours">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pill">Corridor Experiences</span>
+        <h2 class="section-title">{region.name} Top Safaris &amp; Tours</h2>
+        <p class="section-subtitle">
+          Verified 4x4 safari jeeps, certified local naturalists, and instant booking protection through GetYourGuide.
+        </p>
+      </div>
+
+      {curatedRegionTours.length > 0 ? (
+        <div class="grid-3" data-ui>
+          {curatedRegionTours.map((tour) => (
+            <TourCard tour={tour} />
+          ))}
+        </div>
+      ) : (
+        <div style="background-color:#FFFFFF;border-radius:var(--radius-lg);padding:3rem;text-align:center;border:1px solid var(--border-subtle);max-width:640px;margin:0 auto;" data-ui>
+          <h3 style="font-size:1.25rem;margin-bottom:0.75rem;">Additional departures being scheduled</h3>
+          <p style="color:var(--ink-muted);margin-bottom:1.5rem;font-size:0.9375rem;">
+            Need help finding available departures or private excursions in {region.name}?
+          </p>
+          <a href="https://wa.me/4915123457858" class="btn btn--amber" target="_blank" rel="noopener noreferrer">
+            <span>GetYourGuide WhatsApp (+49 151 23457858)</span>
+            <span>↗</span>
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Related Chauffeur Route Pricing -->
+  {relatedRoutes.length > 0 && (
+    <section class="section section--white">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-pill">Flat Fares</span>
+          <h2 class="section-title">{region.name} Highway Fares</h2>
+          <p class="section-subtitle">
+            Fixed prices in US dollars including private air-conditioned vehicle, licensed chauffeur, expressway tolls, and fuel.
+          </p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1.75rem;max-width:960px;margin:0 auto;" data-ui>
+          {relatedRoutes.map((route) => (
+            <div style="background-color:var(--bg-page);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:1.75rem;display:flex;flex-direction:column;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;">
+                <div>
+                  <div style="font-size:0.75rem;color:var(--accent-amber);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.25rem;">
+                    Highway Transfer
+                  </div>
+                  <h3 style="font-size:1.15rem;margin:0;">{route.from} → {route.to}</h3>
+                </div>
+                <strong style="font-family:var(--font-serif);font-size:1.35rem;color:var(--ink-primary);font-weight:700;">
+                  {route.price}
+                </strong>
+              </div>
+              <p style="font-size:0.875rem;color:var(--ink-muted);margin-bottom:1.5rem;">
+                Duration: {route.duration} • Via {route.via}
+              </p>
+              <div style="margin-top:auto;">
+                <a
+                  href="/getting-around/#pricing"
+                  class="btn btn--sm btn--teal btn--block"
+                >
+                  <span>View Highway Ledger</span>
+                  <span>→</span>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Regional High-Intent FAQs (AEO & GEO Optimization) -->
+  {currentFaqs.length > 0 && (
+    <section class="section section--white" id="faq">
+      <div class="container" style="max-width:860px;">
+        <div class="section-header">
+          <span class="section-pill">Corridor Intelligence</span>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-subtitle">
+            Essential field advice, timing recommendations, and ticketing protocols for {region.name}.
+          </p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1.25rem;" data-ui>
+          {currentFaqs.map((faq, idx) => (
+            <details style="background:var(--bg-surface-raised);border-radius:var(--radius);border:1px solid var(--border-subtle);padding:1.25rem 1.5rem;" open={idx === 0}>
+              <summary style="font-weight:700;font-size:1.0625rem;color:var(--ink-primary);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                <span>{faq.q}</span>
+                <span style="color:var(--accent-amber);font-size:1.25rem;font-weight:bold;">+</span>
+              </summary>
+              <p style="margin-top:0.85rem;color:var(--ink-body);font-size:0.9375rem;line-height:1.65;">
+                {faq.a}
+              </p>
+            </details>
+          ))}
+        </div>
+
+        <!-- JSON-LD FAQPage Schema for Search Engines and AI Answer Engines -->
+        <script type="application/ld+json" set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": currentFaqs.map(f => ({
+            "@type": "Question",
+            "name": f.q,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": f.a
+            }
+          }))
+        })} />
+      </div>
+    </section>
+  )}
+
+  <!-- Other Regional Corridors Navigation -->
+  <section class="section section--cream">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pill">Continue Exploring</span>
+        <h2 class="section-title">Other Island Corridors</h2>
+      </div>
+
+      <div class="grid-4" data-ui>
+        {otherRegions.map((r) => (
+          <a href={`/${r.slug}/`} class="corridor-card" aria-label={`Explore ${r.name}`}>
+            <img
+              src={r.image}
+              alt={r.name}
+              class="corridor-card__bg"
+              loading="lazy"
+            />
+            <div class="corridor-card__overlay"></div>
+            <div class="corridor-card__content">
+              <h3 class="corridor-card__title" style="font-size:1.2rem;">{r.name}</h3>
+              <p class="corridor-card__tagline" style="font-size:0.8125rem;">{r.tagline}</p>
+              <span class="corridor-card__cta">
+                <span>View Guide</span>
+                <span>→</span>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

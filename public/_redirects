@@ -1,0 +1,4 @@
+# Edge / Cloudflare Pages / Netlify Canonical Redirects
+https://www.lankawayfinder.tours/* https://lankawayfinder.tours/:splat 301!
+http://www.lankawayfinder.tours/* https://lankawayfinder.tours/:splat 301!
+http://lankawayfinder.tours/* https://lankawayfinder.tours/:splat 301!

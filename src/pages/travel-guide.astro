@@ -1,0 +1,280 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SafariCostCalculator from "../components/SafariCostCalculator.astro";
+import DriverFareCalculator from "../components/DriverFareCalculator.astro";
+import { guidesData } from "../data/guidesData";
+
+const frictionGuides = guidesData.slice(0, 6);
+const generalGuides = guidesData.slice(6);
+---
+
+<BaseLayout
+  title="Sri Lanka Travel Guides & Cost Calculators (2026) | LankaWayfinder"
+  description="Verified Sri Lanka travel intelligence: solve sold-out Kandy to Ella train tickets, calculate real private driver fares ($65–$85/day), and check Yala DWC gate fees."
+  currentPath="/travel-guide/"
+>
+  <!-- Page Hero -->
+  <section class="section section--cream" style="padding-top:clamp(4rem, 6vw, 5.5rem);padding-bottom:clamp(3rem, 5vw, 4.5rem);">
+    <div class="container">
+      <div class="section-header section-header--left" style="max-width:880px;margin-bottom:0;">
+        <span class="section-pill">Verified Route Intelligence</span>
+        <h1 style="margin-bottom:1rem;">Sri Lanka Travel Guides &amp; Field Dossiers</h1>
+        <p class="section-subtitle">
+          Unvarnished logistical advice backed by empirical traveler evidence, Department of Wildlife Conservation (DWC) tariffs, and licensed transport dispatchers. No commission kickbacks, no hidden gate fees.
+        </p>
+
+        <!-- JSON-LD BreadcrumbList & ItemList Schema -->
+        <script type="application/ld+json" set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://lankawayfinder.tours/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Travel Guides",
+                  "item": "https://lankawayfinder.tours/travel-guide/"
+                }
+              ]
+            },
+            {
+              "@type": "ItemList",
+              "name": "Sri Lanka Route Friction Solvers & Field Dossiers",
+              "description": "Logistics guides solving train ticket scarcity, safari permit confusion, driver commission traps, and airport transfers.",
+              "numberOfItems": guidesData.length,
+              "itemListElement": guidesData.map((g, idx) => ({
+                "@type": "ListItem",
+                "position": idx + 1,
+                "url": `https://lankawayfinder.tours/travel-guide/${g.slug}/`,
+                "item": {
+                  "@type": "Article",
+                  "headline": g.title,
+                  "description": g.summary,
+                  "image": g.image,
+                  "articleSection": g.category,
+                  "author": {
+                    "@type": "Organization",
+                    "name": "LankaWayfinder Route Intelligence & Dispatch Desk"
+                  },
+                  "publisher": {
+                    "@type": "Organization",
+                    "name": "LankaWayfinder",
+                    "logo": {
+                      "@type": "ImageObject",
+                      "url": "https://lankawayfinder.tours/favicon.svg"
+                    }
+                  }
+                }
+              }))
+            }
+          ]
+        })} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Calculators Hub -->
+  <section class="section" style="padding-bottom:1rem;">
+    <div class="container">
+      <div style="margin-bottom:2rem;">
+        <span class="section-pill">Interactive Calculation Engines</span>
+        <h2 style="font-size:clamp(1.75rem, 2.5vw, 2.25rem);margin-bottom:0.5rem;">Transparent Travel Cost Calculators</h2>
+        <p style="color:var(--ink-muted);max-width:720px;margin:0;">
+          Eliminate guesswork and tourist markups. Use our live engines to calculate official gate entry taxes and fair chauffeur fares.
+        </p>
+      </div>
+
+      <!-- Safari Calculator -->
+      <SafariCostCalculator defaultPark="yala" />
+
+      <!-- Driver Fare Calculator -->
+      <DriverFareCalculator />
+    </div>
+  </section>
+
+  <!-- High-Friction Tactical Guides Grid -->
+  <section class="section">
+    <div class="container">
+      <div style="margin-bottom:2.5rem;">
+        <span class="section-pill">High-Friction Solutions</span>
+        <h2 style="font-size:clamp(1.75rem, 2.5vw, 2.25rem);margin-bottom:0.5rem;">Traveler Pain-Point Solvers</h2>
+        <p style="color:var(--ink-muted);max-width:760px;margin:0;">
+          Detailed field dossiers addressing the most frequently reported planning bottlenecks in Sri Lanka—backed by forum evidence and official public policies.
+        </p>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:4rem;" data-ui>
+        {frictionGuides.map((g) => (
+          <article class="guide-card">
+            <div class="guide-card__media">
+              <img
+                src={g.image}
+                alt={g.title}
+                loading="lazy"
+                width="700"
+                height="400"
+              />
+              <span class="guide-card__badge-overlay">Verified Intelligence</span>
+            </div>
+            <div class="guide-card__body">
+              <div class="guide-card__meta">
+                <span class="guide-card__cat">{g.category}</span>
+                <span class="guide-card__time">{g.readTime}</span>
+              </div>
+
+              <h2 class="guide-card__title">
+                {g.title}
+              </h2>
+
+              <p class="guide-card__desc">
+                {g.summary}
+              </p>
+
+              <div class="guide-card__proof-snippet">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>Proof from: {g.verifiedProof.sourceLabel}</span>
+              </div>
+
+              <a
+                href={`/travel-guide/${g.slug}/`}
+                class="guide-card__cta"
+                aria-label={`Read full guide on ${g.title}`}
+              >
+                <span>Read field dossier &amp; solutions</span>
+                <span>&rarr;</span>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Additional Regional Planning Guides -->
+      {generalGuides.length > 0 && (
+        <div style="margin-bottom:3.5rem;">
+          <h3 style="font-size:1.5rem;margin-bottom:1.5rem;">Regional Route Intelligence</h3>
+          <div class="grid-2" data-ui>
+            {generalGuides.map((g) => (
+              <article class="guide-card">
+                <div class="guide-card__media">
+                  <img
+                    src={g.image}
+                    alt={g.title}
+                    loading="lazy"
+                    width="700"
+                    height="400"
+                  />
+                </div>
+                <div class="guide-card__body">
+                  <div class="guide-card__meta">
+                    <span class="guide-card__cat">{g.category}</span>
+                    <span class="guide-card__time">{g.readTime}</span>
+                  </div>
+
+                  <h2 class="guide-card__title">
+                    {g.title}
+                  </h2>
+
+                  <p class="guide-card__desc">
+                    {g.summary}
+                  </p>
+
+                  <a
+                    href={`/travel-guide/${g.slug}/`}
+                    class="guide-card__cta"
+                    aria-label={`Read guide for ${g.title}`}
+                  >
+                    <span>Read guide</span>
+                    <span>&rarr;</span>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Quick Practical Insights Section -->
+      <div style="background:#FFFFFF;border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:clamp(2rem, 4vw, 3rem);" data-ui>
+        <span class="section-pill">Quick Practical Briefing</span>
+        <h2 style="font-size:1.75rem;margin-bottom:1.5rem;">Key Travel Facts at a Glance</h2>
+
+        <div class="grid-3" style="gap:2rem;">
+          <div>
+            <h4 style="font-size:1.1rem;margin-bottom:0.5rem;color:var(--ink-primary);">1. Visa &amp; ETA</h4>
+            <p style="font-size:0.9375rem;color:var(--ink-body);line-height:1.6;margin:0;">
+              All foreign visitors must obtain an Electronic Travel Authorization (ETA) prior to boarding flights to Colombo Bandaranaike International Airport (CMB). Ensure your passport has at least 6 months validity from departure.
+            </p>
+          </div>
+
+          <div>
+            <h4 style="font-size:1.1rem;margin-bottom:0.5rem;color:var(--ink-primary);">2. Currency &amp; Cash</h4>
+            <p style="font-size:0.9375rem;color:var(--ink-body);line-height:1.6;margin:0;">
+              The currency is the Sri Lankan Rupee (LKR). While luxury hotels and licensed supermarkets accept Visa/Mastercard, roadside coconut stalls, national park gate terminals at dawn, and driver tips require cash LKR.
+            </p>
+          </div>
+
+          <div>
+            <h4 style="font-size:1.1rem;margin-bottom:0.5rem;color:var(--ink-primary);">3. Mobile SIM Cards</h4>
+            <p style="font-size:0.9375rem;color:var(--ink-body);line-height:1.6;margin:0;">
+              Pick up a local Dialog or Mobitel tourist SIM or activate an eSIM upon landing at CMB airport. 4G coverage is exceptionally strong across all major coastal corridors, tea hills, and national park perimeter roads.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .guide-card__badge-overlay {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(22, 37, 43, 0.85);
+    backdrop-filter: blur(4px);
+    color: #FDF9F2;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.65rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .guide-card__cat {
+    color: var(--accent-amber);
+    font-weight: 700;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .guide-card__time {
+    color: var(--ink-muted);
+    font-weight: 500;
+    font-size: 0.8125rem;
+  }
+
+  .guide-card__proof-snippet {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: #9C5803;
+    background: #FFF9F0;
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-sm);
+    margin: 0.85rem 0 1rem 0;
+    border: 1px solid rgba(220, 139, 25, 0.2);
+  }
+</style>

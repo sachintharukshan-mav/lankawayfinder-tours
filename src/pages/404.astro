@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import siteData from "../data/sites/lankawayfinder.json";
+
+const { regions } = siteData;
+---
+
+<BaseLayout
+  title="Page Not Found (404) | LankaWayfinder.tours"
+  description="The requested page could not be located on LankaWayfinder. Explore our verified safaris, corridor itineraries, and island route guides."
+  currentPath="/404/"
+  noindex={true}
+>
+  <section class="section section--cream" style="min-height:75vh;display:flex;align-items:center;padding:clamp(5rem, 8vw, 8rem) 0;">
+    <div class="container" style="max-width:760px;text-align:center;">
+      <span class="section-pill" style="margin-bottom:1.25rem;">Error 404 • Lost in Transit</span>
+      <h1 style="font-size:clamp(2.5rem, 4.5vw, 4rem);margin-bottom:1.25rem;line-height:1.15;">
+        This Corridor Path Does Not Exist
+      </h1>
+      <p class="section-subtitle" style="margin-bottom:2.5rem;">
+        The route or page you are looking for has been moved, rescheduled, or does not exist on our island registry. Let's get you back on track.
+      </p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-bottom:3.5rem;" data-ui>
+        <a href="/" class="btn btn--amber">
+          <span>Return to Homepage</span>
+          <span>→</span>
+        </a>
+        <a href="/tours/" class="btn btn--teal">
+          <span>Explore Verified Tours</span>
+          <span>→</span>
+        </a>
+        <a href="/destinations/" class="btn btn--ghost">
+          <span>View Island Corridors</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div style="background:#FFFFFF;border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:2rem;" data-ui>
+        <h3 style="font-size:1.15rem;margin-bottom:1rem;color:var(--ink-primary);">
+          Popular Island Corridors
+        </h3>
+        <div style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;">
+          {regions.map((reg) => (
+            <a href={`/${reg.slug}/`} class="btn btn--sm btn--secondary">
+              <span>{reg.name}</span>
+              <span>→</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

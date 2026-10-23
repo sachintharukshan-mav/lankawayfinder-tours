@@ -1,0 +1,303 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TourCard from "../components/TourCard.astro";
+import siteData from "../data/sites/lankawayfinder.json";
+
+const { tours } = siteData;
+const sampleTours = tours.slice(0, 3);
+---
+
+<BaseLayout
+  title="Affiliate Disclosure | LankaWayfinder.tours"
+  description="How LankaWayfinder.tours is funded in plain language: our GetYourGuide partnership, independent vetting, and zero paid placement guarantee."
+  currentPath="/affiliate-disclosure/"
+>
+  <!-- Page Header -->
+  <section class="section" style="padding-top:clamp(3.5rem, 6vw, 5rem);padding-bottom:clamp(2.5rem, 4vw, 3.5rem);">
+    <div class="container" style="max-width:960px;">
+      <!-- Breadcrumbs -->
+      <div style="font-size:var(--step-small);color:var(--ink-muted);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;" data-ui>
+        <a href="/" style="color:var(--accent-amber);">Field Dispatch</a>
+        <span>/</span>
+        <span>Transparency</span>
+        <span>/</span>
+        <span style="color:var(--ink-primary);font-weight:600;">Affiliate Disclosure</span>
+      </div>
+
+      <h1 class="animate-enter" style="margin-bottom:1rem;">Affiliate Disclosure</h1>
+      <p class="lead animate-enter" style="max-width:58ch;margin-bottom:2.5rem;">
+        How this site is funded, in plain language.
+      </p>
+
+      <!-- JSON-LD BreadcrumbList Schema -->
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://lankawayfinder.tours/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Affiliate Disclosure",
+            "item": "https://lankawayfinder.tours/affiliate-disclosure/"
+          }
+        ]
+      })} />
+
+      <!-- Editorial Photo Banner: Real Sri Lanka Safari Jeep -->
+      <div class="animate-shutter" style="border-radius:var(--radius-lg);overflow:hidden;background-color:var(--bg-surface);aspect-ratio:21/9;">
+        <img
+          src="https://images.unsplash.com/photo-1705936981595-dea87508ce84?auto=format&fit=crop&w=1600&q=85"
+          alt="Private 4x4 safari cruiser on morning patrol in Yala National Park"
+          fetchpriority="high"
+          width="1200"
+          height="514"
+          style="width:100%;height:100%;object-fit:cover;"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Content Section -->
+  <section class="section--surface" style="padding-top:clamp(3rem, 5vw, 4.5rem);padding-bottom:clamp(4rem, 6vw, 6rem);">
+    <div class="container" style="max-width:960px;">
+      <article class="disclosure-content animate-enter" data-ui>
+        <!-- In Short Summary Box -->
+        <div class="summary-box animate-enter">
+          <strong style="font-family:var(--font-serif);font-size:1.25rem;color:var(--ink-primary);display:block;margin-bottom:0.6rem;font-weight:500;">
+            In Short
+          </strong>
+          <p style="margin:0;font-size:var(--step-body);color:var(--ink-body);line-height:1.65;">
+            If you book a 4x4 safari, day tour, or train experience through a link on this site, or book a private chauffeur vehicle through LankaWayfinder.com, we may earn a commission. You pay exactly the same price. Nobody pays us for a favourable review, and nothing on this site is a paid placement.
+          </p>
+        </div>
+
+        <!-- Who We Work With -->
+        <section class="disclosure-block animate-enter">
+          <h2>Who We Work With</h2>
+          <div class="partners-stack">
+            <div class="partner-card">
+              <div class="partner-card__title">GetYourGuide</div>
+              <p>
+                Every 4x4 safari jeep, national park game drive, and guided cultural tour featured on LankaWayfinder.tours is booked through GetYourGuide. We are an official registered affiliate partner. When you book after clicking one of our links, GetYourGuide pays us a percentage of their commission. Your price is unchanged.
+              </p>
+            </div>
+
+            <div class="partner-card">
+              <div class="partner-card__title">LankaWayfinder Prebooked Airport Transfers</div>
+              <p>
+                Prebooked airport transfers from Colombo Bandaranaike International Airport (CMB) are operated by our dedicated transfer platform (<a href="https://www.lankawayfinder.com" target="_blank" rel="noopener noreferrer" style="color:var(--accent-gold);text-decoration:underline;">LankaWayfinder.com</a>) with fixed rates, flight delay monitoring, and expressway tolls included. Multi-day touring chauffeurs and luggage custody during excursions are coordinated through our custom dispatch desk.
+              </p>
+            </div>
+
+            <div class="partner-card">
+              <div class="partner-card__title">Trip.com (Accommodation Partner)</div>
+              <p>
+                Hand-picked safari lodges, highland tea planter bungalows, and historic heritage villas featured in our Where to Stay collection link to verified listings on Trip.com. As an official Trip.com affiliate partner, we may earn a referral commission on completed hotel stays at zero extra cost to you.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- What This Does and Does Not Change -->
+        <section class="disclosure-block animate-enter">
+          <h2>What This Changes and Does Not Change</h2>
+          <div class="rules-grid">
+            <div class="rule-card">
+              <strong>It does not change your price</strong>
+              <p>Affiliate commissions come out of the platform’s existing fee margin. You never pay a single rupee or dollar extra by booking through our links.</p>
+            </div>
+
+            <div class="rule-card">
+              <strong>It does not buy a ranking</strong>
+              <p>No safari jeep driver, hotel, or excursion operator can pay to appear on this site or to be listed higher. We do not sell sponsored listings or advertorials.</p>
+            </div>
+
+            <div class="rule-card">
+              <strong>It does not stop us being critical</strong>
+              <p>We openly document the 05:40 AM Palatupana gate queues, surprise entrance fees on budget $25 jeeps, rough suspension issues on poorly maintained vehicles, and rainy season road delays.</p>
+            </div>
+
+            <div class="rule-card">
+              <strong>It funds independent route dispatches</strong>
+              <p>Field inspections, chauffeur vetting, web hosting, and continuous verification of gate opening rules are funded entirely by these commissions. There is zero display banner advertising.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- How We Choose What to Recommend -->
+        <section class="disclosure-block animate-enter">
+          <h2>How We Choose Experiences</h2>
+          <p>
+            Safari jeeps and guided route excursions are selected based on four non-negotiable criteria:
+          </p>
+          <ul class="criteria-list">
+            <li>
+              <strong>Verified guest score:</strong> Only packages maintaining an elite 4.85 to 4.96 rating across hundreds of independent reviews are mapped.
+            </li>
+            <li>
+              <strong>Vehicle specification:</strong> Modified high-clearance Toyota Hilux or Land Cruiser 4x4 cruisers with forward-facing elevated seats and licensed local park trackers.
+            </li>
+            <li>
+              <strong>Chauffeur handover safety:</strong> Proven gate protocols where your long-distance private driver can safely park and safeguard luggage while you complete the game drive.
+            </li>
+            <li>
+              <strong>Flexible cancellation:</strong> Zero-stress booking protection with full refunds up to 24 hours prior to departure.
+            </li>
+          </ul>
+        </section>
+
+        <!-- Prices and Accuracy -->
+        <section class="disclosure-block animate-enter">
+          <h2>Prices and Accuracy</h2>
+          <p>
+            All prices shown on this site are indicative starting rates in US dollars and can change based on season, fuel price fluctuations, and Sri Lanka Department of Wildlife Conservation (DWC) gate tariffs. The price displayed on the booking platform at the moment of checkout is the final price that applies. We review rates and park entry rules regularly, but cannot guarantee live rate parity.
+          </p>
+        </section>
+
+        <!-- Questions -->
+        <section class="disclosure-block animate-enter">
+          <h2>Questions</h2>
+          <p>
+            If anything regarding our affiliate partnerships, route dispatches, or commercial relationships is unclear, please reach out directly to our editorial team via our <a href="/contact/" style="color:var(--accent-gold);text-decoration:underline;">contact desk</a> or email <a href="mailto:dispatch@lankawayfinder.com" style="color:var(--accent-gold);text-decoration:underline;">dispatch@lankawayfinder.com</a>.
+          </p>
+        </section>
+
+        <!-- Sample Recommended Experiences (GiliAir Style Tour Cross-Sell) -->
+        <section class="disclosure-block animate-enter" style="margin-top:1.5rem;">
+          <h2>Featured Island Experiences</h2>
+          <p>
+            Sample top-rated experiences booked through GetYourGuide with our verified chauffeur handover protocol:
+          </p>
+          <div class="tours-grid" style="margin-top:1rem;">
+            {sampleTours.map((tour) => (
+              <div class="animate-enter">
+                <TourCard tour={tour} />
+              </div>
+            ))}
+          </div>
+        </section>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .disclosure-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .summary-box {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-left: 4px solid var(--accent-amber);
+    padding: clamp(1.5rem, 3.5vw, 2.25rem);
+    border-radius: var(--radius-lg);
+  }
+
+  .disclosure-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .disclosure-block h2 {
+    font-size: clamp(1.6rem, 1.4rem + 1vw, 2.1rem);
+    margin: 0;
+  }
+
+  .partners-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .partner-card {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    padding: 1.75rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .partner-card__title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--ink-primary);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .partner-card p {
+    margin: 0;
+    font-size: var(--step-body);
+    color: var(--ink-body);
+    line-height: 1.6;
+  }
+
+  .rules-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .rules-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .rule-card {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .rule-card strong {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--accent-amber);
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+  }
+
+  .rule-card p {
+    margin: 0;
+    font-size: var(--step-body);
+    color: var(--ink-body);
+    line-height: 1.55;
+  }
+
+  .criteria-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .criteria-list li {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius);
+    font-size: var(--step-body);
+    color: var(--ink-body);
+    line-height: 1.6;
+  }
+
+  .criteria-list strong {
+    color: var(--ink-primary);
+  }
+</style>
