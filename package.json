@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev --host",
-    "build": "astro build",
+    "build": "astro build && node copy-sitemap.mjs",
     "preview": "astro preview"
   },
   "dependencies": {

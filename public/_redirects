@@ -2,3 +2,8 @@
 https://www.lankawayfinder.tours/* https://lankawayfinder.tours/:splat 301!
 http://www.lankawayfinder.tours/* https://lankawayfinder.tours/:splat 301!
 http://lankawayfinder.tours/* https://lankawayfinder.tours/:splat 301!
+
+# Sitemap aliases
+/sitemap.xml /sitemap-0.xml 200
+/sitemap /sitemap-0.xml 200
+

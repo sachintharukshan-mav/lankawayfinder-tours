@@ -19,4 +19,5 @@ Allow: /
 # https://lankawayfinder.tours/llms.txt
 
 # Sitemap
+Sitemap: https://lankawayfinder.tours/sitemap.xml
 Sitemap: https://lankawayfinder.tours/sitemap-index.xml
