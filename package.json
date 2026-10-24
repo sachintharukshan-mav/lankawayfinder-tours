@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev --host",
     "build": "astro build && node copy-sitemap.mjs",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "report": "node scripts/posthog-report.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
