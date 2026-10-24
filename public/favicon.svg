@@ -1,6 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#132A1E"/>
-  <circle cx="16" cy="16" r="10" stroke="#D4A359" stroke-width="2" fill="none"/>
-  <polygon points="16,8 20,16 16,14 12,16" fill="#C2542D"/>
-  <polygon points="16,24 20,16 16,18 12,16" fill="#D4A359"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3942"/>
+      <stop offset="100%" stop-color="#122026"/>
+    </linearGradient>
+    <linearGradient id="needle-n" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3B755"/>
+      <stop offset="100%" stop-color="#DC8B19"/>
+    </linearGradient>
+    <linearGradient id="needle-s" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B26A06"/>
+      <stop offset="100%" stop-color="#7D4600"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Squircle Rounded Base Tile (Matching Header Brand Tile) -->
+  <rect width="64" height="64" rx="16" fill="url(#bg)"/>
+  <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1.5"/>
+
+  <!-- Dial Ring -->
+  <circle cx="32" cy="32" r="21" stroke="#FDF9F2" stroke-width="2.5" fill="none" stroke-opacity="0.95"/>
+  
+  <!-- Wayfinder 4-Point Faceted Compass Star -->
+  <!-- North Point -->
+  <polygon points="32,12 36.5,32 32,29.5" fill="url(#needle-n)"/>
+  <polygon points="32,12 32,29.5 27.5,32" fill="#E59924"/>
+
+  <!-- South Point -->
+  <polygon points="32,52 36.5,32 32,34.5" fill="url(#needle-s)"/>
+  <polygon points="32,52 32,34.5 27.5,32" fill="#995602"/>
+
+  <!-- East Point -->
+  <polygon points="52,32 32,36.5 34.5,32" fill="url(#needle-n)"/>
+  <polygon points="52,32 34.5,32 32,27.5" fill="#B26A06"/>
+
+  <!-- West Point -->
+  <polygon points="12,32 32,27.5 29.5,32" fill="url(#needle-n)"/>
+  <polygon points="12,32 29.5,32 32,36.5" fill="#B26A06"/>
+
+  <!-- Center Pivot Pin -->
+  <circle cx="32" cy="32" r="3.5" fill="#FDF9F2"/>
+  <circle cx="32" cy="32" r="1.8" fill="#16252B"/>
 </svg>
