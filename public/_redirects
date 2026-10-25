@@ -7,3 +7,9 @@ http://lankawayfinder.tours/* https://lankawayfinder.tours/:splat 301!
 /sitemap.xml /sitemap-0.xml 200
 /sitemap /sitemap-0.xml 200
 
+# Legacy URL redirects
+/things_to_do.php /tours/ 301
+/things_to_do /tours/ 301
+/things-to-do /tours/ 301
+
+
