@@ -12,4 +12,8 @@ http://lankawayfinder.tours/* https://lankawayfinder.tours/:splat 301!
 /things_to_do /tours/ 301
 /things-to-do /tours/ 301
 
+# Google Search Console Verification File
+/googleHgYszjZCVL6jre3cyqc7fNsKAkmcdBaG80uoFp_r1IM.html /googleHgYszjZCVL6jre3cyqc7fNsKAkmcdBaG80uoFp_r1IM 200
+
+
 

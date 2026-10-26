@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "indexnow": "node scripts/ping-indexnow.mjs",
     "report": "node scripts/posthog-report.mjs",
-    "verify": "node scripts/verify-all.mjs"
+    "verify": "node scripts/verify-all.mjs",
+    "verify:gsc": "node scripts/verify-gsc.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
