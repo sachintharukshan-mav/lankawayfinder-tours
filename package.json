@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev --host",
-    "build": "astro build && node copy-sitemap.mjs",
+    "build": "astro build && node copy-sitemap.mjs && node scripts/generate-ai-markdown.mjs",
     "preview": "astro preview",
-    "report": "node scripts/posthog-report.mjs"
+    "indexnow": "node scripts/ping-indexnow.mjs",
+    "report": "node scripts/posthog-report.mjs",
+    "verify": "node scripts/verify-all.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
