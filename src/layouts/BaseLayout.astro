@@ -24,6 +24,8 @@ const {
 const rawPath = (currentPath || "/").split("?")[0].split("#")[0];
 const normalizedPath = rawPath === "/" ? "/" : `${rawPath.replace(/\/+$/, "")}/`;
 const canonicalUrl = `https://lankawayfinder.tours${normalizedPath}`;
+const markdownPath = normalizedPath === "/" ? "/index.md" : `${normalizedPath.replace(/\/+$/, "")}.md`;
+const markdownUrl = `https://lankawayfinder.tours${markdownPath}`;
 ---
 
 <!doctype html>
@@ -36,7 +38,10 @@ const canonicalUrl = `https://lankawayfinder.tours${normalizedPath}`;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="ai-summary" content={description} />
+    <meta name="google-site-verification" content="HgYszjZCVL6jre3cyqc7fNsKAkmcdBaG80uoFp_r1IM" />
     {!noindex && <link rel="canonical" href={canonicalUrl} />}
+    {!noindex && <link rel="alternate" type="text/markdown" href={markdownUrl} title={`${title} (Markdown)`} />}
 
     <!-- Google Fonts: Playfair Display + Inter (matching giliair.com aesthetic) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -80,17 +85,58 @@ const canonicalUrl = `https://lankawayfinder.tours${normalizedPath}`;
           "@id": "https://lankawayfinder.tours/#website",
           "url": "https://lankawayfinder.tours/",
           "name": "LankaWayfinder",
+          "alternateName": "LankaWayfinder.tours",
           "description": "Independent Sri Lanka Safaris, Chauffeur Transfers & Island Travel Guide",
+          "inLanguage": "en-US",
           "publisher": {
             "@id": "https://lankawayfinder.tours/#organization"
           }
         },
         {
-          "@type": "Organization",
+          "@type": ["Organization", "TravelAgency"],
           "@id": "https://lankawayfinder.tours/#organization",
           "name": "LankaWayfinder",
           "url": "https://lankawayfinder.tours/",
-          "logo": "https://lankawayfinder.tours/favicon.svg"
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://lankawayfinder.tours/favicon.svg"
+          },
+          "description": "Independent route intelligence, verified 4x4 safari jeeps, and private transfer logistics across Sri Lanka. Curated by licensed transport dispatchers.",
+          "sameAs": [
+            "https://www.lankawayfinder.com"
+          ],
+          "areaServed": {
+            "@type": "Country",
+            "name": "Sri Lanka",
+            "sameAs": "https://en.wikipedia.org/wiki/Sri_Lanka"
+          },
+          "knowsAbout": [
+            "Yala National Park Block 1 Leopard Safaris",
+            "Udawalawe National Park Wild Elephant Safaris",
+            "Minneriya National Park Elephant Gathering",
+            "Department of Wildlife Conservation (DWC) Sri Lanka Entrance Permits",
+            "Kandy to Ella Scenic Train Reserved Observation Tickets",
+            "Colombo Bandaranaike International Airport (CMB) Private Chauffeur Transfers",
+            "Sigiriya Lion Rock Citadel & Cultural Triangle Logistics",
+            "Mirissa Blue Whale Watching & Galle Dutch Fort"
+          ],
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "contactType": "customer support",
+              "telephone": "+1-855-957-1272",
+              "url": "https://lankawayfinder.tours/contact/",
+              "availableLanguage": ["English"]
+            },
+            {
+              "@type": "ContactPoint",
+              "contactType": "reservations",
+              "telephone": "+49-151-23457858",
+              "url": "https://wa.me/4915123457858",
+              "availableLanguage": ["English"]
+            }
+          ],
+          "publishingPrinciples": "https://lankawayfinder.tours/affiliate-disclosure/"
         }
       ]
     })} />
