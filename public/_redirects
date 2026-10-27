@@ -23,6 +23,9 @@ http://lankawayfinder.tours/* https://lankawayfinder.tours/:splat 301!
 /about-us.php / 301
 /gallery.php /destinations/ 301
 /services.php /tours/ 301
+/tailormade.php /tours/ 301
+/tailor-made.php /tours/ 301
+/tailor_made.php /tours/ 301
 /index.php / 301
 
 # Google Search Console Verification File
