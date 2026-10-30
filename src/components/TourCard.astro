@@ -56,13 +56,7 @@ const locationDisplay = tour.location || tour.region;
 
 <article class="tour-card" id={tour.id} data-ui>
   <!-- Card Image Media -->
-  <a
-    href={gygUrl}
-    target="_blank"
-    rel="sponsored noopener noreferrer"
-    class="tour-card__media"
-    aria-label={`View ${tour.title} on GetYourGuide`}
-  >
+  <div class="tour-card__media">
     <img
       src={tour.image}
       alt={tour.title}
@@ -80,7 +74,7 @@ const locationDisplay = tour.location || tour.region;
     <span class="tour-card__badge-price">
       From {cleanPrice}
     </span>
-  </a>
+  </div>
 
   <!-- Card Body Content -->
   <div class="tour-card__content">
@@ -97,9 +91,15 @@ const locationDisplay = tour.location || tour.region;
       <span>Verified</span>
     </div>
 
-    <!-- Title -->
+    <!-- Title with Stretched Link (Whole Card Clickable) -->
     <h3 class="tour-card__title">
-      <a href={gygUrl} target="_blank" rel="sponsored noopener noreferrer">
+      <a
+        href={gygUrl}
+        target="_blank"
+        rel="sponsored noopener noreferrer"
+        class="tour-card__link card-link"
+        aria-label={`${tour.title} - Check availability on GetYourGuide`}
+      >
         {tour.title}
       </a>
     </h3>
@@ -186,23 +186,17 @@ const locationDisplay = tour.location || tour.region;
       )}
     </div>
 
-    <!-- Card Footer: Price & CTA Button -->
+    <!-- Card Footer: Price & CTA Button (Visual representation, full card is clickable) -->
     <div class="tour-card__footer">
       <div class="tour-card__price-box">
         <span class="tour-card__price-label">{t("tour.price_per_person")}</span>
         <span class="tour-card__price-val">{cleanPrice}</span>
       </div>
 
-      <a
-        href={gygUrl}
-        target="_blank"
-        rel="sponsored noopener noreferrer"
-        class="btn btn--sm btn--amber"
-        aria-label={`Check availability for ${tour.title}`}
-      >
+      <span class="btn btn--sm btn--amber tour-card__cta" aria-hidden="true">
         <span>{t("btn.check_avail")}</span>
         <span>→</span>
-      </a>
+      </span>
     </div>
   </div>
 
