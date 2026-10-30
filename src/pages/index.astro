@@ -23,6 +23,14 @@ function getTripUrl(stay: typeof stays[0]) {
 // Top 3 guides for homepage
 const featuredGuides = guides.slice(0, 3);
 
+const regionBadges: Record<string, string> = {
+  "yala-udawalawe": "Wildlife & Big Cats",
+  "sigiriya-minneriya": "Ancient Citadel & UNESCO",
+  "ella-hill-country": "Scenic Tea Rail",
+  "mirissa-galle": "Southern Bastions & Coast",
+  "colombo-cmb": "Airport Transit Logistics"
+};
+
 const faqs = [
   {
     q: "How does the chauffeur and safari jeep handover work?",
@@ -256,26 +264,41 @@ const faqs = [
         </p>
       </div>
 
-      <div class="grid-3" style="margin-bottom:2.5rem;">
-        {regions.map((region) => (
-          <a href={`/${region.slug}/`} class="corridor-card" aria-label={`Explore ${region.name}`}>
-            <img
-              src={region.image}
-              alt={region.name}
-              class="corridor-card__bg"
-              loading="lazy"
-            />
-            <div class="corridor-card__overlay"></div>
-            <div class="corridor-card__content">
-              <h3 class="corridor-card__title">{region.name}</h3>
-              <p class="corridor-card__tagline">{region.tagline}</p>
-              <span class="corridor-card__cta">
-                <span>Explore Corridor</span>
-                <span>→</span>
-              </span>
-            </div>
-          </a>
-        ))}
+      <!-- Magnetic Bento Grid w/ CSS Anchor Positioning -->
+      <div class="corridors-bento" data-ui>
+        {regions.map((region, idx) => {
+          const isHero = idx < 2;
+          const badge = regionBadges[region.slug] || "Regional Corridor";
+          return (
+            <a
+              href={`/${region.slug}/`}
+              class={`corridor-bento-card ${isHero ? "corridor-bento-card--hero" : "corridor-bento-card--standard"}`}
+              aria-label={`Explore ${region.name}`}
+            >
+              <img
+                src={region.image}
+                alt={region.name}
+                class="corridor-bento-card__bg"
+                loading="lazy"
+              />
+              <div class="corridor-bento-card__scrim"></div>
+              <div class="corridor-bento-card__content">
+                <div class="corridor-bento-card__badge-row">
+                  <span class="corridor-bento-card__badge">{badge}</span>
+                  {region.bestTime && (
+                    <span class="corridor-bento-card__meta">Best: {region.bestTime.split("•")[0].trim()}</span>
+                  )}
+                </div>
+                <h3 class="corridor-bento-card__title">{region.name}</h3>
+                <p class="corridor-bento-card__tagline">{region.tagline}</p>
+                <span class="corridor-bento-card__cta">
+                  <span>Explore Corridor Guide</span>
+                  <span>→</span>
+                </span>
+              </div>
+            </a>
+          );
+        })}
       </div>
 
       <div style="text-align:center;">

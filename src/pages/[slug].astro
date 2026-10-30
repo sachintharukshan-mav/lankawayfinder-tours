@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import TourCard from "../components/TourCard.astro";
+import HighlandRailElevationProfile from "../components/HighlandRailElevationProfile.astro";
 import siteData from "../data/sites/lankawayfinder.json";
 
 export function getStaticPaths() {
@@ -197,6 +198,14 @@ const currentFaqs = regionalFaqs[region.slug] || [];
       </div>
     </div>
   </section>
+
+  {region.slug === "ella-hill-country" && (
+    <section class="section section--white" style="padding-top:0;">
+      <div class="container">
+        <HighlandRailElevationProfile />
+      </div>
+    </section>
+  )}
 
   <!-- Chauffeur Handover & Luggage Protocol Section -->
   <section class="section section--white">
@@ -414,4 +423,12 @@ const currentFaqs = regionalFaqs[region.slug] || [];
       </div>
     </div>
   </section>
+
+  {region.slug === "ella-hill-country" && (
+    <section class="section section--white" style="padding-top:0;">
+      <div class="container">
+        <HighlandRailElevationProfile />
+      </div>
+    </section>
+  )}
 </BaseLayout>

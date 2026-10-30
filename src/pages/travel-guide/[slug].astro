@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SafariCostCalculator from "../../components/SafariCostCalculator.astro";
 import DriverFareCalculator from "../../components/DriverFareCalculator.astro";
+import HighlandRailElevationProfile from "../../components/HighlandRailElevationProfile.astro";
 import { guidesData, type GuideData } from "../../data/guidesData";
 
 export function getStaticPaths() {
@@ -194,6 +195,12 @@ function formatGuideContent(raw: string): string {
         {guide.calculator === "driver" && (
           <section style="margin:2.5rem 0;">
             <DriverFareCalculator />
+          </section>
+        )}
+
+        {(guide.slug === "kandy-to-ella-train-sold-out" || guide.slug === "kandy-to-ella-scenic-train-guide") && (
+          <section style="margin:2.5rem 0;">
+            <HighlandRailElevationProfile />
           </section>
         )}
 

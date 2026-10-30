@@ -2,6 +2,7 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import SafariCostCalculator from "../../../components/SafariCostCalculator.astro";
 import DriverFareCalculator from "../../../components/DriverFareCalculator.astro";
+import HighlandRailElevationProfile from "../../../components/HighlandRailElevationProfile.astro";
 import { guidesData, type GuideData } from "../../../data/guidesData";
 import { nonDefaultLanguages, languages, type SupportedLanguage, getLocalizedUrl } from "../../../i18n/languages";
 import { useTranslations } from "../../../i18n/ui";
@@ -209,6 +210,12 @@ if (ctaUrl.includes("getyourguide.com") && !ctaUrl.includes("locale=")) {
         {guide.calculator === "driver" && (
           <section style="margin:2.5rem 0;">
             <DriverFareCalculator />
+          </section>
+        )}
+
+        {(guide.slug === "kandy-to-ella-train-sold-out" || guide.slug === "kandy-to-ella-scenic-train-guide") && (
+          <section style="margin:2.5rem 0;">
+            <HighlandRailElevationProfile lang={lang} />
           </section>
         )}
 

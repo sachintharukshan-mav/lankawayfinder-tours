@@ -33,6 +33,51 @@ function getTripUrl(stay: typeof stays[0]) {
 
 const featuredGuides = guides.slice(0, 3);
 
+const regionBadges: Record<SupportedLanguage, Record<string, string>> = {
+  en: {
+    "yala-udawalawe": "Wildlife & Big Cats",
+    "sigiriya-minneriya": "Ancient Citadel & UNESCO",
+    "ella-hill-country": "Scenic Tea Rail",
+    "mirissa-galle": "Southern Bastions & Coast",
+    "colombo-cmb": "Airport Transit Logistics"
+  },
+  de: {
+    "yala-udawalawe": "Wildtiere & Leoparden",
+    "sigiriya-minneriya": "Felsenfestung & UNESCO",
+    "ella-hill-country": "Panoramazug & Teeberge",
+    "mirissa-galle": "Südküste & Walbeobachtung",
+    "colombo-cmb": "Hauptstadt & Flughafentransfer"
+  },
+  fr: {
+    "yala-udawalawe": "Faune Sauvage & Léopards",
+    "sigiriya-minneriya": "Citadelle Antique & UNESCO",
+    "ella-hill-country": "Train Panoramique & Thé",
+    "mirissa-galle": "Côte Sud & Baleines",
+    "colombo-cmb": "Transit & Aéroport CMB"
+  },
+  ru: {
+    "yala-udawalawe": "Дикая природа и леопарды",
+    "sigiriya-minneriya": "Древняя крепость ЮНЕСКО",
+    "ella-hill-country": "Чайные горы и поезд",
+    "mirissa-galle": "Южное побережье и киты",
+    "colombo-cmb": "Трансфер из аэропорта"
+  },
+  it: {
+    "yala-udawalawe": "Fauna Selvatica & Leopardi",
+    "sigiriya-minneriya": "Cittadella UNESCO",
+    "ella-hill-country": "Treno Panoramico & Tè",
+    "mirissa-galle": "Costa Sud & Balene",
+    "colombo-cmb": "Transito Aeroporto CMB"
+  },
+  es: {
+    "yala-udawalawe": "Vida Silvestre y Leopardos",
+    "sigiriya-minneriya": "Ciudadela Antigua UNESCO",
+    "ella-hill-country": "Tren Panorámico del Té",
+    "mirissa-galle": "Costa Sur y Ballenas",
+    "colombo-cmb": "Tránsito Aeropuerto CMB"
+  }
+};
+
 const faqs = [
   {
     q: "How does the chauffeur and safari jeep handover work?",
@@ -201,21 +246,36 @@ const faqs = [
         </p>
       </div>
 
-      <div class="grid-3">
-        {regions.map((region) => (
-          <a href={getLocalizedUrl(lang, `/${region.slug}/`)} class="corridor-card" aria-label={region.name}>
-            <img src={region.image} alt={region.name} class="corridor-card__bg" loading="lazy" />
-            <div class="corridor-card__overlay"></div>
-            <div class="corridor-card__content">
-              <h3 class="corridor-card__title">{region.name}</h3>
-              <p class="corridor-card__tagline">{region.tagline}</p>
-              <span class="corridor-card__cta">
-                <span>View Route Guide</span>
-                <span>→</span>
-              </span>
-            </div>
-          </a>
-        ))}
+      <!-- Magnetic Bento Grid w/ CSS Anchor Positioning -->
+      <div class="corridors-bento" data-ui>
+        {regions.map((region, idx) => {
+          const isHero = idx < 2;
+          const badge = regionBadges[lang]?.[region.slug] || "Corridor";
+          return (
+            <a
+              href={getLocalizedUrl(lang, `/${region.slug}/`)}
+              class={`corridor-bento-card ${isHero ? "corridor-bento-card--hero" : "corridor-bento-card--standard"}`}
+              aria-label={region.name}
+            >
+              <img src={region.image} alt={region.name} class="corridor-bento-card__bg" loading="lazy" />
+              <div class="corridor-bento-card__scrim"></div>
+              <div class="corridor-bento-card__content">
+                <div class="corridor-bento-card__badge-row">
+                  <span class="corridor-bento-card__badge">{badge}</span>
+                  {region.bestTime && (
+                    <span class="corridor-bento-card__meta">Best: {region.bestTime.split("•")[0].trim()}</span>
+                  )}
+                </div>
+                <h3 class="corridor-bento-card__title">{region.name}</h3>
+                <p class="corridor-bento-card__tagline">{region.tagline}</p>
+                <span class="corridor-bento-card__cta">
+                  <span>View Route Guide</span>
+                  <span>→</span>
+                </span>
+              </div>
+            </a>
+          );
+        })}
       </div>
     </div>
   </section>

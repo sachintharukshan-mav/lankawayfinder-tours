@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import TourCard from "../../components/TourCard.astro";
+import HighlandRailElevationProfile from "../../components/HighlandRailElevationProfile.astro";
 import siteData from "../../data/sites/lankawayfinder.json";
 import { nonDefaultLanguages, type SupportedLanguage, getLocalizedUrl } from "../../i18n/languages";
 import { useTranslations } from "../../i18n/ui";
@@ -229,6 +230,14 @@ const currentFaqs = regionalFaqs[region.slug] || [];
       </div>
     </div>
   </section>
+
+  {region.slug === "ella-hill-country" && (
+    <section class="section section--white" style="padding-top:0;">
+      <div class="container">
+        <HighlandRailElevationProfile lang={lang} />
+      </div>
+    </section>
+  )}
 
   <!-- Chauffeur Handover & Luggage Protocol Section -->
   <section class="section section--white">
