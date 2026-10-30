@@ -1,12 +1,14 @@
 ---
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
+import { languages, allLanguages, defaultLang, getPathWithoutLang, type SupportedLanguage } from "../i18n/languages";
 import "../styles/global.css";
 
 interface Props {
   title?: string;
   description?: string;
   currentPath?: string;
+  lang?: SupportedLanguage;
   noindex?: boolean;
   ogImage?: string;
   ogType?: string;
@@ -16,6 +18,7 @@ const {
   title = "LankaWayfinder.tours | Sri Lanka Safaris, Chauffeurs & Island Guide (2026)",
   description = "Independent Sri Lanka route coordination: verified 4x4 wildlife safaris in Yala & Udawalawe, Kandy-to-Ella train solutions, and fixed-rate chauffeur transfers.",
   currentPath = "/",
+  lang,
   noindex = false,
   ogImage = "https://images.unsplash.com/photo-1566296314736-6eaac1ca0cb9?auto=format&fit=crop&w=1200&q=80",
   ogType = "website",
@@ -23,13 +26,21 @@ const {
 
 const rawPath = (currentPath || "/").split("?")[0].split("#")[0];
 const normalizedPath = rawPath === "/" ? "/" : `${rawPath.replace(/\/+$/, "")}/`;
+const pathSegments = normalizedPath.replace(/^\/+|\/+$/g, '').split('/');
+const detectedLang = allLanguages.includes(pathSegments[0] as SupportedLanguage)
+  ? (pathSegments[0] as SupportedLanguage)
+  : (lang || defaultLang);
+
+const currentLang: SupportedLanguage = detectedLang;
+const langMeta = languages[currentLang] || languages[defaultLang];
+const cleanPath = getPathWithoutLang(normalizedPath);
 const canonicalUrl = `https://lankawayfinder.tours${normalizedPath}`;
 const markdownPath = normalizedPath === "/" ? "/index.md" : `${normalizedPath.replace(/\/+$/, "")}.md`;
 const markdownUrl = `https://lankawayfinder.tours${markdownPath}`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={langMeta.code}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -42,6 +53,19 @@ const markdownUrl = `https://lankawayfinder.tours${markdownPath}`;
     <meta name="google-site-verification" content="HgYszjZCVL6jre3cyqc7fNsKAkmcdBaG80uoFp_r1IM" />
     {!noindex && <link rel="canonical" href={canonicalUrl} />}
     {!noindex && <link rel="alternate" type="text/markdown" href={markdownUrl} title={`${title} (Markdown)`} />}
+
+    <!-- Multilingual Alternates (hreflang) for Google & Bing -->
+    {!noindex && (
+      <>
+        <link rel="alternate" hreflang="en" href={`https://lankawayfinder.tours${cleanPath}`} />
+        <link rel="alternate" hreflang="de" href={`https://lankawayfinder.tours/de${cleanPath}`} />
+        <link rel="alternate" hreflang="fr" href={`https://lankawayfinder.tours/fr${cleanPath}`} />
+        <link rel="alternate" hreflang="ru" href={`https://lankawayfinder.tours/ru${cleanPath}`} />
+        <link rel="alternate" hreflang="it" href={`https://lankawayfinder.tours/it${cleanPath}`} />
+        <link rel="alternate" hreflang="es" href={`https://lankawayfinder.tours/es${cleanPath}`} />
+        <link rel="alternate" hreflang="x-default" href={`https://lankawayfinder.tours${cleanPath}`} />
+      </>
+    )}
 
     <!-- Google Fonts: Playfair Display + Inter (matching giliair.com aesthetic) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -58,7 +82,7 @@ const markdownUrl = `https://lankawayfinder.tours${markdownPath}`;
     {!noindex && <meta property="og:url" content={canonicalUrl} />}
     <meta property="og:site_name" content="LankaWayfinder" />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={langMeta.ogLocale} />
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -186,7 +210,7 @@ const markdownUrl = `https://lankawayfinder.tours${markdownPath}`;
     </a>
 
     <!-- Sticky Navigation Bar (Matching user reference header) -->
-    <Navigation currentPath={normalizedPath} />
+    <Navigation currentPath={normalizedPath} currentLang={currentLang} />
 
     <!-- Main Page Content -->
     <main id="main">
@@ -194,6 +218,6 @@ const markdownUrl = `https://lankawayfinder.tours${markdownPath}`;
     </main>
 
     <!-- Site Footer -->
-    <Footer />
+    <Footer currentLang={currentLang} />
   </body>
 </html>

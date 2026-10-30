@@ -1,13 +1,18 @@
 ---
 // Safari Cost Calculator - Independent DWC Gate Permit & Jeep Fee Estimator
+import { languages, defaultLang, type SupportedLanguage } from "../i18n/languages";
+
 interface Props {
   defaultPark?: "yala" | "udawalawe" | "wilpattu" | "minneriya";
+  lang?: SupportedLanguage;
 }
 
-const { defaultPark = "yala" } = Astro.props;
+const { defaultPark = "yala", lang = defaultLang } = Astro.props;
+const langMeta = languages[lang] || languages[defaultLang];
+const localeQuery = lang !== defaultLang ? `&locale=${langMeta.gygLocale}` : "";
 ---
 
-<div class="safari-calc" id="safari-calc" data-ui>
+<div class="safari-calc" id="safari-calc" data-ui data-locale-query={localeQuery}>
   <div class="safari-calc__header">
     <div class="safari-calc__badge">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -149,7 +154,7 @@ const { defaultPark = "yala" } = Astro.props;
       <div class="safari-calc__rec-actions">
         <a
           id="safari-gyg-btn"
-          href="https://www.getyourguide.com/tissamaharama-l147871/yala-safari-morningevening-7hours-12-hours-incl-meals-t776345/?partner_id=QOSQVIQ&utm_medium=online_publisher&cmp=lwf_dispatch_calc_yala"
+          href={`https://www.getyourguide.com/tissamaharama-l147871/yala-safari-morningevening-7hours-12-hours-incl-meals-t776345/?partner_id=QOSQVIQ&utm_medium=online_publisher&cmp=lwf_dispatch_calc_yala_${lang}${localeQuery}`}
           target="_blank"
           rel="noopener noreferrer"
           class="btn btn--primary"
@@ -161,6 +166,58 @@ const { defaultPark = "yala" } = Astro.props;
       </div>
     </div>
   </div>
+
+  <!-- Static Reference Table for AI Answer Engines & Quick Comparison -->
+  <details style="margin-top:1.25rem;background:var(--bg-page);border-radius:var(--radius);border:1px solid var(--border-subtle);padding:1rem 1.25rem;">
+    <summary style="font-weight:700;font-size:0.9375rem;color:var(--ink-primary);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <span>2026 Official DWC National Park Permit &amp; 4x4 Jeep Tariff Reference Table (All Parks)</span>
+      <span style="color:var(--accent-amber);font-size:0.8125rem;font-weight:600;">View Full Matrix ▾</span>
+    </summary>
+    <div tabindex="0" role="region" aria-labelledby="safari-tariff-caption" class="pricing-table-container" style="margin-top:1rem;overflow-x:auto;">
+      <table class="pricing-table" style="font-size:0.875rem;">
+        <caption id="safari-tariff-caption" class="sr-only">2026 Sri Lanka Department of Wildlife Conservation (DWC) foreign entry fees and 4x4 safari jeep rates across Yala, Udawalawe, Minneriya, and Wilpattu</caption>
+        <thead>
+          <tr>
+            <th scope="col">National Park</th>
+            <th scope="col">Foreign Adult / Child Permit</th>
+            <th scope="col">Tax &amp; Vehicle Entry</th>
+            <th scope="col">Half-Day / Full-Day 4x4 Jeep</th>
+            <th scope="col">2-Adult Half-Day Total (Self-Booked)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" style="font-weight:700;color:var(--ink-primary);text-align:left;">Yala National Park (Block 1 &amp; 2)</th>
+            <td>$35 / $18 USD</td>
+            <td>+15% VAT + $5.50 jeep levy</td>
+            <td>$45 / $85 USD</td>
+            <td style="font-weight:700;color:#B26A06;">$141.83 USD (~42,500 LKR)</td>
+          </tr>
+          <tr>
+            <th scope="row" style="font-weight:700;color:var(--ink-primary);text-align:left;">Udawalawe National Park</th>
+            <td>$35 / $18 USD</td>
+            <td>+15% VAT + $5.50 jeep levy</td>
+            <td>$40 / $75 USD</td>
+            <td style="font-weight:700;color:#B26A06;">$136.83 USD (~41,050 LKR)</td>
+          </tr>
+          <tr>
+            <th scope="row" style="font-weight:700;color:var(--ink-primary);text-align:left;">Minneriya / Kaudulla</th>
+            <td>$35 / $18 USD</td>
+            <td>+15% VAT + $5.50 jeep levy</td>
+            <td>$45 / $85 USD</td>
+            <td style="font-weight:700;color:#B26A06;">$141.83 USD (~42,500 LKR)</td>
+          </tr>
+          <tr>
+            <th scope="row" style="font-weight:700;color:var(--ink-primary);text-align:left;">Wilpattu National Park</th>
+            <td>$35 / $18 USD</td>
+            <td>+15% VAT + $5.50 jeep levy</td>
+            <td>$55 / $95 USD</td>
+            <td style="font-weight:700;color:#B26A06;">$151.83 USD (~45,550 LKR)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
 </div>
 
 <script>
@@ -243,7 +300,8 @@ const { defaultPark = "yala" } = Astro.props;
       outLkrTotal.textContent = `${lkrAmount.toLocaleString()} LKR`;
 
       if (gygBtn && gygLinks[park]) {
-        gygBtn.href = gygLinks[park];
+        const localeQuery = form.closest("#safari-calc")?.getAttribute("data-locale-query") || "";
+        gygBtn.href = `${gygLinks[park]}${localeQuery}`;
       }
     }
 

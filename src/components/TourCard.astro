@@ -1,5 +1,7 @@
 ---
 import siteData from "../data/sites/lankawayfinder.json";
+import { languages, defaultLang, type SupportedLanguage } from "../i18n/languages";
+import { useTranslations } from "../i18n/ui";
 
 export interface Tour {
   id: string;
@@ -33,14 +35,18 @@ export interface Tour {
 
 interface Props {
   tour: Tour;
+  lang?: SupportedLanguage;
 }
 
-const { tour } = Astro.props;
+const { tour, lang = defaultLang } = Astro.props;
 const { site } = siteData;
+const t = useTranslations(lang);
+const langMeta = languages[lang] || languages[defaultLang];
 
+const localeQuery = lang !== defaultLang ? `&locale=${langMeta.gygLocale}` : "";
 const gygUrl = tour.gygActivityPath
-  ? `https://www.getyourguide.com/${tour.gygActivityPath}/?partner_id=${site.partnerId}&utm_medium=online_publisher&cmp=${site.campaignPrefix}_card_${tour.id}`
-  : `https://www.getyourguide.com/activity/-t${tour.gygActivityId || tour.id}/?partner_id=${site.partnerId}&utm_medium=online_publisher&cmp=${site.campaignPrefix}_card_${tour.id}`;
+  ? `https://www.getyourguide.com/${tour.gygActivityPath}/?partner_id=${site.partnerId}&utm_medium=online_publisher&cmp=${site.campaignPrefix}_card_${lang}_${tour.id}${localeQuery}`
+  : `https://www.getyourguide.com/activity/-t${tour.gygActivityId || tour.id}/?partner_id=${site.partnerId}&utm_medium=online_publisher&cmp=${site.campaignPrefix}_card_${lang}_${tour.id}${localeQuery}`;
 
 const cleanPrice = tour.price.replace("FROM ", "");
 const categoryName = tour.category || tour.bookingType.split(" ")[0];
@@ -48,7 +54,7 @@ const durationDisplay = tour.durationShort || tour.duration.replace("DURATION: "
 const locationDisplay = tour.location || tour.region;
 ---
 
-<article class="tour-card" data-ui>
+<article class="tour-card" id={tour.id} data-ui>
   <!-- Card Image Media -->
   <a
     href={gygUrl}
@@ -183,7 +189,7 @@ const locationDisplay = tour.location || tour.region;
     <!-- Card Footer: Price & CTA Button -->
     <div class="tour-card__footer">
       <div class="tour-card__price-box">
-        <span class="tour-card__price-label">Price per person</span>
+        <span class="tour-card__price-label">{t("tour.price_per_person")}</span>
         <span class="tour-card__price-val">{cleanPrice}</span>
       </div>
 
@@ -194,7 +200,7 @@ const locationDisplay = tour.location || tour.region;
         class="btn btn--sm btn--amber"
         aria-label={`Check availability for ${tour.title}`}
       >
-        <span>Check availability</span>
+        <span>{t("btn.check_avail")}</span>
         <span>→</span>
       </a>
     </div>
@@ -204,13 +210,15 @@ const locationDisplay = tour.location || tour.region;
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Product",
+    "@id": `https://lankawayfinder.tours/tours/#${tour.id}`,
+    "url": `https://lankawayfinder.tours/tours/#${tour.id}`,
     "name": tour.title,
-    "description": tour.overview,
+    "description": `${tour.overview} ${tour.chauffeurNote || ""}`.trim(),
     "image": tour.image,
     "category": tour.category || "Tour",
     "brand": {
       "@type": "Brand",
-      "name": "GetYourGuide Verified Partner"
+      "name": "LankaWayfinder Verified Partner"
     },
     "offers": {
       "@type": "Offer",
@@ -218,7 +226,10 @@ const locationDisplay = tour.location || tour.region;
       "priceCurrency": "USD",
       "priceValidUntil": "2027-12-31",
       "availability": "https://schema.org/InStock",
-      "url": gygUrl
+      "url": `https://lankawayfinder.tours/tours/#${tour.id}`,
+      "seller": {
+        "@id": "https://lankawayfinder.tours/#organization"
+      }
     },
     "aggregateRating": {
       "@type": "AggregateRating",

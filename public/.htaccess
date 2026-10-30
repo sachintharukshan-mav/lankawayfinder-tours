@@ -19,17 +19,44 @@ ErrorDocument 404 /404.html
   RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html[\s?] [NC]
   RewriteRule ^(.*/)?index\.html$ https://lankawayfinder.tours/$1 [L,R=301]
 
-  # 3. Enforce trailing slash on extensionless routes (excluding real files like /404.html, /robots.txt, /llms.txt)
+  # 3. AI Agent Content Negotiation: Serve .md when Accept explicitly prefers text/markdown
+  RewriteCond %{HTTP_ACCEPT} text/markdown [NC]
+  RewriteCond %{HTTP_ACCEPT} !text/html [NC]
+  RewriteCond %{REQUEST_URI} ^/$
+  RewriteRule ^$ /index.md [L]
+
+  RewriteCond %{HTTP_ACCEPT} text/markdown [NC]
+  RewriteCond %{HTTP_ACCEPT} !text/html [NC]
+  RewriteCond %{REQUEST_URI} ^/(.+?)/?$
+  RewriteCond %{DOCUMENT_ROOT}/%1.md -f
+  RewriteRule ^(.+?)/?$ /$1.md [L]
+
+  # 4. Enforce trailing slash on extensionless routes (excluding real files like /404.html, /robots.txt, /llms.txt, /*.md)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_URI} !\.[a-zA-Z0-9]{1,5}$
   RewriteCond %{REQUEST_URI} !/$
   RewriteRule ^(.*[^/])$ https://lankawayfinder.tours/$1/ [L,R=301]
 </IfModule>
 
-# Fast Indexing & Cache-Control Headers for Core Web Vitals (LCP / INP)
+# Fast Indexing & Cache-Control Headers for Core Web Vitals (LCP / INP) & AI Discovery
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header append Link "<https://lankawayfinder.tours/llms.txt>; rel=\"describedby\"; type=\"text/plain\", <https://lankawayfinder.tours/llms-full.txt>; rel=\"describedby\"; type=\"text/plain\", <https://lankawayfinder.tours/ai.txt>; rel=\"describedby\"; type=\"text/plain\""
+
+  <FilesMatch "\.md$">
+    Header set Content-Type "text/markdown; charset=utf-8"
+    Header set X-Robots-Tag "noindex, follow"
+    Header set Access-Control-Allow-Origin "*"
+    Header set Cache-Control "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400"
+    Header append Vary "Accept"
+  </FilesMatch>
+
+  <FilesMatch "^(llms|llms-full|ai)\.txt$">
+    Header set Content-Type "text/plain; charset=utf-8"
+    Header set Access-Control-Allow-Origin "*"
+    Header set Cache-Control "public, max-age=3600, s-maxage=86400"
+  </FilesMatch>
 
   <FilesMatch "\.(webp|webm|jpg|jpeg|png|svg|woff2)$">
     Header set Cache-Control "public, max-age=31536000, immutable"

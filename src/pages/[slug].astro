@@ -142,11 +142,23 @@ const currentFaqs = regionalFaqs[region.slug] || [];
           },
           {
             "@type": "TouristDestination",
+            "@id": `https://lankawayfinder.tours/${region.slug}/#destination`,
             "name": region.name,
             "description": region.description,
             "image": region.image,
             "url": `https://lankawayfinder.tours/${region.slug}/`,
             "touristType": ["Wildlife Safaris", "Scenic Highland Railways", "Heritage & Culture"]
+          },
+          {
+            "@type": "ItemList",
+            "name": `${region.name} Verified Safaris & Tours (2026)`,
+            "numberOfItems": curatedRegionTours.length,
+            "itemListElement": curatedRegionTours.map((tour, idx) => ({
+              "@type": "ListItem",
+              "position": idx + 1,
+              "url": `https://lankawayfinder.tours/${region.slug}/#${tour.id}`,
+              "name": tour.title
+            }))
           }
         ]
       })} />
@@ -227,11 +239,47 @@ const currentFaqs = regionalFaqs[region.slug] || [];
       </div>
 
       {curatedRegionTours.length > 0 ? (
-        <div class="grid-3" data-ui>
-          {curatedRegionTours.map((tour) => (
-            <TourCard tour={tour} />
-          ))}
-        </div>
+        <>
+          <div class="grid-3" data-ui>
+            {curatedRegionTours.map((tour) => (
+              <TourCard tour={tour} />
+            ))}
+          </div>
+
+          <details style="margin-top:2rem;background:#FFFFFF;border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:1.15rem 1.5rem;">
+            <summary style="font-weight:700;font-size:1rem;color:var(--ink-primary);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+              <span>{region.name} 2026 Safari &amp; Tour Comparison Table ({curatedRegionTours.length} Experiences)</span>
+              <span style="color:var(--accent-amber);font-size:0.875rem;font-weight:600;">View Table ▾</span>
+            </summary>
+            <div tabindex="0" role="region" aria-labelledby={`corridor-table-${region.slug}`} class="pricing-table-container" style="margin-top:1rem;overflow-x:auto;">
+              <table class="pricing-table">
+                <caption id={`corridor-table-${region.slug}`} class="sr-only">{region.name} verified tours and safaris comparison table</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Experience</th>
+                    <th scope="col">Duration</th>
+                    <th scope="col">Gate / Departure</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Starting Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {curatedRegionTours.map((tour) => (
+                    <tr>
+                      <th scope="row" style="font-weight:700;color:var(--ink-primary);text-align:left;">
+                        <a href={`#${tour.id}`} style="color:var(--ink-primary);text-decoration:underline;">{tour.title}</a>
+                      </th>
+                      <td>{tour.durationShort || tour.duration.replace("DURATION: ", "")}</td>
+                      <td style="font-size:0.875rem;">{tour.gateOrHarbor}</td>
+                      <td><strong>{tour.ratingScore.toFixed(2)}/5</strong> ({tour.reviewCount.toLocaleString()})</td>
+                      <td style="font-weight:700;color:#B26A06;">{tour.price.replace("FROM ", "")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </>
       ) : (
         <div style="background-color:#FFFFFF;border-radius:var(--radius-lg);padding:3rem;text-align:center;border:1px solid var(--border-subtle);max-width:640px;margin:0 auto;" data-ui>
           <h3 style="font-size:1.25rem;margin-bottom:0.75rem;">Additional departures being scheduled</h3>

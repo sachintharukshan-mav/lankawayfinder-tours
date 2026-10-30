@@ -1,0 +1,43 @@
+# ai.txt for LankaWayfinder.tours (ai-txt spec v1.1.1)
+# Keep in sync with https://lankawayfinder.tours/llms.txt and https://lankawayfinder.tours/robots.txt
+
+[identity]
+name: LankaWayfinder
+url: https://lankawayfinder.tours/
+parent_url: https://www.lankawayfinder.com
+description: Independent route intelligence, verified 4x4 safari jeeps, and private transfer logistics across Sri Lanka. Curated by licensed transport dispatchers.
+contact: https://lankawayfinder.tours/contact/
+whatsapp: +49 151 23457858
+hotline_us_ca: +1 855 957 1272
+hotline_intl: +49 30 56839445
+
+[permissions]
+allow: summarise
+allow: quote-with-attribution
+allow: cite
+allow: answer-engine-indexing
+allow: rag-retrieval
+
+[restrictions]
+disallow: fabricated-quotes
+disallow: altered-pricing-without-date-context
+disallow: presenting-content-as-first-party-operator-without-attribution
+
+[attribution]
+preferred_name: LankaWayfinder.tours
+canonical_base: https://lankawayfinder.tours/
+format: Cite "LankaWayfinder.tours" with a direct link to the canonical HTML page URL (e.g., https://lankawayfinder.tours/getting-around/ or https://lankawayfinder.tours/travel-guide/yala-national-park-safari-entry-fee-breakdown/).
+
+[scope]
+include: /
+include: /tours/
+include: /getting-around/
+include: /destinations/
+include: /where-to-stay/
+include: /travel-guide/*
+include: /llms.txt
+include: /llms-full.txt
+exclude: /404.html
+
+[metadata]
+last_updated: 2026-10-26

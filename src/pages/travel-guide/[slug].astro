@@ -124,7 +124,7 @@ function formatGuideContent(raw: string): string {
   </header>
 
   <!-- Main Content Layout -->
-  <main class="section" style="padding-top:2rem;">
+  <div class="section" style="padding-top:2rem;">
     <div class="container guide-layout">
       <!-- Article Body -->
       <article class="guide-article">
@@ -161,15 +161,17 @@ function formatGuideContent(raw: string): string {
         <!-- Official Baseline Matrix -->
         <section class="baseline-section">
           <h2 class="baseline-section__title">Official Public Tariffs &amp; Regulatory Standards</h2>
-          <div class="baseline-grid">
+          <dl class="baseline-grid" style="margin:0;">
             {guide.officialBaseline.map((item) => (
               <div class="baseline-card">
-                <span class="baseline-card__label">{item.label}</span>
-                <strong class="baseline-card__value">{item.value}</strong>
-                <p class="baseline-card__detail">{item.detail}</p>
+                <dt class="baseline-card__label">{item.label}</dt>
+                <dd style="margin:0;">
+                  <strong class="baseline-card__value">{item.value}</strong>
+                  <p class="baseline-card__detail">{item.detail}</p>
+                </dd>
               </div>
             ))}
-          </div>
+          </dl>
         </section>
 
         <!-- Key Takeaways Box -->
@@ -280,7 +282,7 @@ function formatGuideContent(raw: string): string {
         </div>
       </aside>
     </div>
-  </main>
+  </div>
 </BaseLayout>
 
 <style>

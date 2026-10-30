@@ -1,0 +1,216 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SafariCostCalculator from "../../components/SafariCostCalculator.astro";
+import DriverFareCalculator from "../../components/DriverFareCalculator.astro";
+import { guidesData } from "../../data/guidesData";
+import { nonDefaultLanguages, type SupportedLanguage, getLocalizedUrl } from "../../i18n/languages";
+import { useTranslations } from "../../i18n/ui";
+
+export function getStaticPaths() {
+  return nonDefaultLanguages.map((lang) => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params as { lang: SupportedLanguage };
+const t = useTranslations(lang);
+
+const titles: Record<SupportedLanguage, { title: string; desc: string }> = {
+  en: {
+    title: "Sri Lanka Travel Guides & Cost Calculators (2026) | LankaWayfinder",
+    desc: "Verified Sri Lanka travel intelligence: solve sold-out Kandy to Ella train tickets, calculate real private driver fares, and check Yala DWC gate fees."
+  },
+  de: {
+    title: "Sri Lanka Reiseführer & Kostenrechner (2026) | LankaWayfinder",
+    desc: "Geprüfte Sri Lanka Reise-Tipps: Kandy-Ella Zugtickets bei Ausverkauf, echte Chauffeurpreise und Safari-Genehmigungen im Detail."
+  },
+  fr: {
+    title: "Guides de Voyage Sri Lanka & Simulateurs de Prix (2026) | LankaWayfinder",
+    desc: "Conseils vérifiés : billets de train Kandy-Ella complets, tarifs réels des chauffeurs privés et permis DWC pour les parcs nationaux."
+  },
+  ru: {
+    title: "Путеводители по Шри-Ланке и калькуляторы цен (2026) | LankaWayfinder",
+    desc: "Проверенные советы: что делать при отсутствии билетов на поезд Канди — Элла, калькулятор водителя и входные билеты в парки DWC."
+  },
+  it: {
+    title: "Guide di Viaggio Sri Lanka & Calcolatori Tariffe (2026) | LankaWayfinder",
+    desc: "Consigli pratici verificati: biglietti treno Kandy-Ella esauriti, tariffe trasparenti per autisti privati e permessi safari a Yala."
+  },
+  es: {
+    title: "Guías de Viaje de Sri Lanka y Calculadoras (2026) | LankaWayfinder",
+    desc: "Consejos prácticos comprobados: qué hacer si el tren Kandy-Ella está agotado, precios reales de chóferes y tarifas de safaris DWC."
+  }
+};
+
+const meta = titles[lang] || titles.en;
+const frictionGuides = guidesData.slice(0, 6);
+const generalGuides = guidesData.slice(6);
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.desc}
+  currentPath={`/${lang}/travel-guide/`}
+  lang={lang}
+>
+  <!-- Page Hero -->
+  <section class="section section--cream" style="padding-top:clamp(4rem, 6vw, 5.5rem);padding-bottom:clamp(3rem, 5vw, 4.5rem);">
+    <div class="container">
+      <div class="section-header section-header--left" style="max-width:880px;margin-bottom:0;">
+        <span class="section-pill">{t("nav.guides")}</span>
+        <h1 style="margin-bottom:1rem;">{meta.title.split("|")[0].trim()}</h1>
+        <p class="section-subtitle">
+          {meta.desc}
+        </p>
+
+        <!-- JSON-LD BreadcrumbList & ItemList Schema -->
+        <script type="application/ld+json" set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": t("nav.home"),
+                  "item": `https://lankawayfinder.tours${getLocalizedUrl(lang, "/")}`
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": t("nav.guides"),
+                  "item": `https://lankawayfinder.tours/${lang}/travel-guide/`
+                }
+              ]
+            },
+            {
+              "@type": "ItemList",
+              "name": meta.title,
+              "description": meta.desc,
+              "numberOfItems": guidesData.length,
+              "itemListElement": guidesData.map((g, idx) => ({
+                "@type": "ListItem",
+                "position": idx + 1,
+                "url": `https://lankawayfinder.tours/${lang}/travel-guide/${g.slug}/`,
+                "item": {
+                  "@type": "Article",
+                  "headline": g.title,
+                  "description": g.summary,
+                  "image": g.image,
+                  "articleSection": g.category,
+                  "author": {
+                    "@type": "Organization",
+                    "name": "LankaWayfinder Route Intelligence & Dispatch Desk"
+                  },
+                  "publisher": {
+                    "@type": "Organization",
+                    "name": "LankaWayfinder"
+                  }
+                }
+              }))
+            }
+          ]
+        })} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Calculators Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pill">Interactive Cost Engines</span>
+        <h2 class="section-title">2026 Sri Lanka Travel Calculators</h2>
+        <p class="section-subtitle">
+          Plan transparent costs with zero hidden charges before booking drivers or park permits.
+        </p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:3.5rem;">
+        <DriverFareCalculator />
+        <SafariCostCalculator lang={lang} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Friction Solvers Grid -->
+  <section class="section section--cream">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pill">Tactical Solvers</span>
+        <h2 class="section-title">Critical Route Friction Solvers</h2>
+      </div>
+
+      <div class="grid-3" data-ui>
+        {frictionGuides.map((guide) => (
+          <article class="guide-card" style="background:#FFFFFF;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border-subtle);display:flex;flex-direction:column;">
+            <div style="aspect-ratio:16/9;overflow:hidden;background:#E5E7EB;">
+              <img src={guide.image} alt={guide.title} loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
+            </div>
+            <div style="padding:1.5rem;display:flex;flex-direction:column;flex-grow:1;">
+              <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.75rem;">
+                <span class="badge badge--sand">{guide.category}</span>
+                <span style="font-size:0.8125rem;color:var(--ink-muted);">{guide.readTime}</span>
+              </div>
+              <h3 style="font-size:1.15rem;line-height:1.4;margin-bottom:0.75rem;">
+                <a href={getLocalizedUrl(lang, `/travel-guide/${guide.slug}/`)} style="color:var(--ink-primary);text-decoration:none;">
+                  {guide.title}
+                </a>
+              </h3>
+              <p style="color:var(--ink-secondary);font-size:0.875rem;line-height:1.6;margin-bottom:1.5rem;flex-grow:1;">
+                {guide.summary}
+              </p>
+              <div>
+                <a href={getLocalizedUrl(lang, `/travel-guide/${guide.slug}/`)} class="btn btn--sm btn--primary">
+                  <span>Read Guide</span>
+                  <span>→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- General Guides Grid -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pill">Field Dossiers</span>
+        <h2 class="section-title">Essential Destination Intelligence</h2>
+      </div>
+
+      <div class="grid-3" data-ui>
+        {generalGuides.map((guide) => (
+          <article class="guide-card" style="background:#FFFFFF;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border-subtle);display:flex;flex-direction:column;">
+            <div style="aspect-ratio:16/9;overflow:hidden;background:#E5E7EB;">
+              <img src={guide.image} alt={guide.title} loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
+            </div>
+            <div style="padding:1.5rem;display:flex;flex-direction:column;flex-grow:1;">
+              <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.75rem;">
+                <span class="badge badge--sand">{guide.category}</span>
+                <span style="font-size:0.8125rem;color:var(--ink-muted);">{guide.readTime}</span>
+              </div>
+              <h3 style="font-size:1.15rem;line-height:1.4;margin-bottom:0.75rem;">
+                <a href={getLocalizedUrl(lang, `/travel-guide/${guide.slug}/`)} style="color:var(--ink-primary);text-decoration:none;">
+                  {guide.title}
+                </a>
+              </h3>
+              <p style="color:var(--ink-secondary);font-size:0.875rem;line-height:1.6;margin-bottom:1.5rem;flex-grow:1;">
+                {guide.summary}
+              </p>
+              <div>
+                <a href={getLocalizedUrl(lang, `/travel-guide/${guide.slug}/`)} class="btn btn--sm btn--primary">
+                  <span>Read Guide</span>
+                  <span>→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

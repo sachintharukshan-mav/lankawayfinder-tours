@@ -1,12 +1,29 @@
 # Robots.txt for LankaWayfinder.tours
+# Keep in sync with https://lankawayfinder.tours/llms.txt and https://lankawayfinder.tours/ai.txt
+
 User-agent: *
 Allow: /
 
-# Answer Engine Optimization (AEO) Crawlers for Live Search & Citations
+# Answer Engine Optimization (AEO) Live Search & Citation Crawlers
 User-agent: OAI-SearchBot
 Allow: /
 
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
 User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
 Allow: /
 
 User-agent: ClaudeBot
@@ -15,9 +32,14 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-# LLM & AI Discovery Dossier
-# https://lankawayfinder.tours/llms.txt
+User-agent: Applebot-Extended
+Allow: /
 
-# Sitemap
+# LLM & AI Discovery Dossiers
+# llms.txt: https://lankawayfinder.tours/llms.txt
+# llms-full.txt: https://lankawayfinder.tours/llms-full.txt
+# ai.txt: https://lankawayfinder.tours/ai.txt
+
+# Sitemaps (HTML canonicals only; .md alternates are noindex)
 Sitemap: https://lankawayfinder.tours/sitemap.xml
 Sitemap: https://lankawayfinder.tours/sitemap-index.xml

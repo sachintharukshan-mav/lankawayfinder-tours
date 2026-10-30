@@ -1,0 +1,230 @@
+---
+import { languages, allLanguages, getLocalizedUrl, type SupportedLanguage, defaultLang } from "../i18n/languages";
+
+interface Props {
+  currentLang?: SupportedLanguage;
+  currentPath?: string;
+  isMobile?: boolean;
+}
+
+const { currentLang = defaultLang, currentPath = Astro.url.pathname, isMobile = false } = Astro.props;
+const current = languages[currentLang] || languages[defaultLang];
+---
+
+{isMobile ? (
+  <!-- Mobile Segmented / List Language Selector -->
+  <div class="lang-picker-mobile" data-ui>
+    <span class="lang-picker-mobile__title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="2" y1="12" x2="22" y2="12"></line>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+      </svg>
+      Select Language / Sprache / Langue
+    </span>
+    <div class="lang-picker-mobile__grid">
+      {allLanguages.map((code) => {
+        const item = languages[code];
+        const isActive = code === currentLang;
+        const targetUrl = getLocalizedUrl(code, currentPath);
+        return (
+          <a
+            href={targetUrl}
+            class={`lang-picker-mobile__item ${isActive ? "lang-picker-mobile__item--active" : ""}`}
+            aria-current={isActive ? "true" : undefined}
+          >
+            <span class="lang-flag">{item.flag}</span>
+            <span class="lang-name">{item.nativeName}</span>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+) : (
+  <!-- Desktop Sleek Dropdown Language Selector -->
+  <div class="lang-picker" data-ui>
+    <button
+      type="button"
+      class="lang-picker__btn"
+      aria-haspopup="listbox"
+      aria-expanded="false"
+      aria-label={`Select language (current: ${current.nativeName})`}
+    >
+      <span class="lang-flag">{current.flag}</span>
+      <span class="lang-picker__current-code">{current.code.toUpperCase()}</span>
+      <svg class="lang-picker__arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+
+    <div class="lang-picker__menu" role="listbox" aria-label="Available languages">
+      {allLanguages.map((code) => {
+        const item = languages[code];
+        const isActive = code === currentLang;
+        const targetUrl = getLocalizedUrl(code, currentPath);
+        return (
+          <a
+            href={targetUrl}
+            role="option"
+            aria-selected={isActive ? "true" : "false"}
+            class={`lang-picker__option ${isActive ? "lang-picker__option--active" : ""}`}
+          >
+            <span class="lang-flag">{item.flag}</span>
+            <span class="lang-picker__label">{item.nativeName}</span>
+            {isActive && (
+              <svg class="lang-picker__check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            )}
+          </a>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+<style>
+  /* Desktop Dropdown Styles */
+  .lang-picker {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .lang-picker__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 9999px;
+    background: rgba(22, 37, 43, 0.04);
+    border: 1px solid rgba(22, 37, 43, 0.1);
+    color: #16252B;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+
+  .lang-picker__btn:hover {
+    background: rgba(22, 37, 43, 0.08);
+    border-color: rgba(22, 37, 43, 0.2);
+  }
+
+  .lang-picker__arrow {
+    transition: transform 0.2s ease;
+    color: #6B7280;
+  }
+
+  .lang-picker:focus-within .lang-picker__arrow,
+  .lang-picker:hover .lang-picker__arrow {
+    transform: rotate(180deg);
+  }
+
+  .lang-picker__menu {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    min-width: 155px;
+    background: #FFFFFF;
+    border: 1px solid rgba(22, 37, 43, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(22, 37, 43, 0.12), 0 8px 10px -6px rgba(22, 37, 43, 0.08);
+    padding: 0.4rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.15rem;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+
+  .lang-picker:focus-within .lang-picker__menu,
+  .lang-picker:hover .lang-picker__menu {
+    display: flex;
+    animation: fadeIn 0.15s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .lang-picker__option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.65rem;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    color: #374151;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .lang-picker__option:hover {
+    background: #F3F4F6;
+    color: #111827;
+  }
+
+  .lang-picker__option--active {
+    background: #FEF3C7;
+    color: #92400E;
+    font-weight: 600;
+  }
+
+  .lang-picker__check {
+    margin-left: auto;
+    color: #B45309;
+  }
+
+  .lang-flag {
+    font-size: 0.95rem;
+    line-height: 1;
+  }
+
+  /* Mobile Drawer Selector Styles */
+  .lang-picker-mobile {
+    padding: 1rem 0;
+    border-top: 1px solid rgba(22, 37, 43, 0.08);
+    margin-top: 1rem;
+  }
+
+  .lang-picker-mobile__title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6B7280;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .lang-picker-mobile__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+
+  .lang-picker-mobile__item {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 8px;
+    background: rgba(22, 37, 43, 0.03);
+    border: 1px solid rgba(22, 37, 43, 0.08);
+    font-size: 0.8125rem;
+    color: #1F2937;
+    text-decoration: none;
+  }
+
+  .lang-picker-mobile__item--active {
+    background: #FEF3C7;
+    border-color: #FCD34D;
+    color: #92400E;
+    font-weight: 600;
+  }
+</style>

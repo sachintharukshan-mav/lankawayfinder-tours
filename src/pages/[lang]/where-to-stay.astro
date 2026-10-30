@@ -1,0 +1,207 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import siteData from "../../data/sites/lankawayfinder.json";
+import { nonDefaultLanguages, type SupportedLanguage, getLocalizedUrl } from "../../i18n/languages";
+import { useTranslations } from "../../i18n/ui";
+
+export function getStaticPaths() {
+  return nonDefaultLanguages.map((lang) => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params as { lang: SupportedLanguage };
+const t = useTranslations(lang);
+const { site, stays } = siteData;
+
+function getTripUrl(stay: typeof stays[0]) {
+  if (stay.hotelId) {
+    return `https://www.trip.com/hotels/detail/?hotelId=${stay.hotelId}&Allianceid=${site.tripAllianceId || "11096275"}&SID=${site.tripSid || "334154717"}&trip_sub1=&trip_sub3=${site.tripSub3 || "D20421816"}`;
+  }
+  return stay.tripUrl;
+}
+
+const titles: Record<SupportedLanguage, { title: string; desc: string }> = {
+  en: {
+    title: "Where to Stay in Sri Lanka (2026): 8 Boutique Safari Lodges & Villas | LankaWayfinder",
+    desc: "Hand-picked Sri Lanka accommodation: luxury Yala safari cocoon tents, restored tea planter bungalows in Hatton & Ella, and Galle Fort heritage hotels."
+  },
+  de: {
+    title: "Unterkünfte in Sri Lanka (2026): 8 Boutique Safari-Lodges & Villen | LankaWayfinder",
+    desc: "Ausgewählte Unterkünfte in Sri Lanka: Luxus-Safarizelte in Yala, restaurierte Teeplantagen-Bungalows und historische Kolonialhotels in Galle Fort."
+  },
+  fr: {
+    title: "Où Loger au Sri Lanka (2026) : 8 Lodges de Safari & Hôtels de Charme | LankaWayfinder",
+    desc: "Notre sélection au Sri Lanka : tentes safari de luxe à Yala, bungalows historiques dans les plantations de thé et hôtels de charme à Galle."
+  },
+  ru: {
+    title: "Где остановиться на Шри-Ланке (2026): 8 лучших сафари-лоджей и вилл | LankaWayfinder",
+    desc: "Проверенные отели Шри-Ланки: люксовые шатры в сафари-парке Яла, чайные бунгало в горах Эллы и колониальные особняки в форте Галле."
+  },
+  it: {
+    title: "Dove Dormire in Sri Lanka (2026): 8 Migliori Safari Lodge e Ville | LankaWayfinder",
+    desc: "Alloggi selezionati in Sri Lanka: tende safari di lusso a Yala, bungalow storici nelle piantagioni di tè e dimore coloniali a Galle Fort."
+  },
+  es: {
+    title: "Dónde Alojarse en Sri Lanka (2026): 8 Lodges de Safari y Hoteles Boutique | LankaWayfinder",
+    desc: "Alojamientos recomendados en Sri Lanka: tiendas de lujo en Yala, bungalows coloniales en las plantaciones de té y hoteles boutique en Galle Fort."
+  }
+};
+
+const meta = titles[lang] || titles.en;
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.desc}
+  currentPath={`/${lang}/where-to-stay/`}
+  lang={lang}
+>
+  <!-- Hero Section -->
+  <section class="section section--cream" style="padding-top:clamp(4rem, 6vw, 5.5rem);padding-bottom:clamp(3rem, 5vw, 4.5rem);">
+    <div class="container">
+      <div class="section-header section-header--left" style="max-width:820px;margin-bottom:0;">
+        <span class="section-pill">{t("nav.stay")}</span>
+        <h1 style="margin-bottom:1rem;">{meta.title.split(":")[0]}</h1>
+        <p class="section-subtitle">
+          {meta.desc}
+        </p>
+
+        <!-- JSON-LD BreadcrumbList & Hotel ItemList Schema -->
+        <script type="application/ld+json" set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": t("nav.home"),
+                  "item": `https://lankawayfinder.tours${getLocalizedUrl(lang, "/")}`
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": t("nav.stay"),
+                  "item": `https://lankawayfinder.tours/${lang}/where-to-stay/`
+                }
+              ]
+            },
+            {
+              "@type": "ItemList",
+              "name": meta.title,
+              "description": meta.desc,
+              "numberOfItems": stays.length,
+              "itemListElement": stays.map((stay, idx) => ({
+                "@type": "ListItem",
+                "position": idx + 1,
+                "url": `https://lankawayfinder.tours/${lang}/where-to-stay/#${stay.id}`,
+                "item": {
+                  "@type": "Hotel",
+                  "@id": `https://lankawayfinder.tours/${lang}/where-to-stay/#${stay.id}`,
+                  "name": stay.name,
+                  "description": stay.description,
+                  "image": stay.image,
+                  "priceRange": stay.priceTier,
+                  "address": {
+                    "@type": "PostalAddress",
+                    "addressRegion": stay.region,
+                    "addressCountry": "LK"
+                  },
+                  "url": `https://lankawayfinder.tours/${lang}/where-to-stay/#${stay.id}`
+                }
+              }))
+            }
+          ]
+        })} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Hotel Grid -->
+  <section class="section">
+    <div class="container">
+      <div class="grid-2" data-ui>
+        {stays.map((stay) => {
+          const tripUrl = getTripUrl(stay);
+          return (
+            <article class="stay-card" id={stay.id}>
+              <!-- Stay Image -->
+              <a
+                href={tripUrl}
+                target="_blank"
+                rel="sponsored noopener noreferrer"
+                class="stay-card__media"
+                aria-label={`View ${stay.name} rates on Trip.com`}
+              >
+                <img
+                  src={stay.image}
+                  alt={stay.name}
+                  loading="lazy"
+                  width="700"
+                  height="440"
+                />
+                <span class="stay-card__tier">
+                  {stay.priceTier}
+                </span>
+              </a>
+
+              <!-- Stay Content -->
+              <div class="stay-card__body">
+                <div class="stay-card__region">
+                  {stay.region} • {stay.category}
+                </div>
+
+                <h2 class="stay-card__name">
+                  <a
+                    href={tripUrl}
+                    target="_blank"
+                    rel="sponsored noopener noreferrer"
+                  >
+                    {stay.name}
+                  </a>
+                </h2>
+
+                <p class="stay-card__desc">
+                  {stay.description}
+                </p>
+
+                <!-- Amenity Pills -->
+                <ul class="stay-card__amenities">
+                  {stay.highlights.map((h) => (
+                    <li class="stay-card__amenity-pill">
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+
+                <!-- Card Footer with Trip.com Partner Link -->
+                <div class="stay-card__footer">
+                  <div style="display:flex;flex-direction:column;gap:0.2rem;">
+                    <span style="font-size:0.8125rem;font-weight:600;color:var(--accent-amber);">
+                      Trip.com Partner
+                    </span>
+                    <span style="font-size:0.8125rem;color:var(--ink-muted);">
+                      Best rates &amp; flexible cancel
+                    </span>
+                  </div>
+
+                  <a
+                    href={tripUrl}
+                    target="_blank"
+                    rel="sponsored noopener noreferrer"
+                    class="btn btn--sm btn--primary"
+                  >
+                    <span>{t("btn.check_avail")}</span>
+                    <span>↗</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

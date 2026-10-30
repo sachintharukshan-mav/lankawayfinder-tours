@@ -1,6 +1,17 @@
 ---
 import siteData from "../data/sites/lankawayfinder.json";
+import { type SupportedLanguage, defaultLang, languages, getLocalizedUrl } from "../i18n/languages";
+import { useTranslations } from "../i18n/ui";
+
+interface Props {
+  currentLang?: SupportedLanguage;
+}
+
+const { currentLang = defaultLang } = Astro.props;
 const { site, regions } = siteData;
+const t = useTranslations(currentLang);
+const langMeta = languages[currentLang] || languages[defaultLang];
+const localeQuery = currentLang !== defaultLang ? `&locale=${langMeta.gygLocale}` : "";
 ---
 
 <footer class="site-footer">
@@ -8,7 +19,7 @@ const { site, regions } = siteData;
     <div class="footer-grid">
       <!-- Col 1: Brand & Partner Badge -->
       <div>
-        <a href="/" class="brand-link" style="margin-bottom:1.25rem;" aria-label="LankaWayfinder Home">
+        <a href={getLocalizedUrl(currentLang, "/")} class="brand-link" style="margin-bottom:1.25rem;" aria-label="LankaWayfinder Home">
           <div class="brand-icon" style="background:#243B45;" aria-hidden="true">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10" stroke="#FDF9F2" stroke-width="1.75"/>
@@ -21,7 +32,7 @@ const { site, regions } = siteData;
         </a>
 
         <p style="font-size:0.9375rem;line-height:1.6;color:var(--ink-muted-on-dark);margin-bottom:1.5rem;max-width:34ch;">
-          Independent Sri Lanka route coordination, verified 4x4 wildlife safaris, and licensed private air-conditioned chauffeur transfers.
+          {t("footer.tagline")}
         </p>
 
         <!-- Official GetYourGuide Partner Badge -->
@@ -33,24 +44,24 @@ const { site, regions } = siteData;
 
       <!-- Col 2: Experiences & Tours -->
       <div>
-        <div class="footer-heading">Experiences &amp; Tours</div>
+        <div class="footer-heading">{t("nav.tours")}</div>
         <ul class="footer-links">
-          <li><a href="/tours/">All Verified Tours</a></li>
-          <li><a href="/destinations/">Things to Do</a></li>
-          <li><a href="/where-to-stay/">Where to Stay</a></li>
-          <li><a href="/getting-around/">Getting Around &amp; Chauffeurs</a></li>
-          <li><a href="/tours/#safari">Wildlife Safaris</a></li>
-          <li><a href="/tours/#culture">Cultural Citadels</a></li>
+          <li><a href={getLocalizedUrl(currentLang, "/tours/")}>{t("btn.view_all_tours")}</a></li>
+          <li><a href={getLocalizedUrl(currentLang, "/destinations/")}>{t("nav.destinations")}</a></li>
+          <li><a href={getLocalizedUrl(currentLang, "/where-to-stay/")}>{t("nav.stay")}</a></li>
+          <li><a href={getLocalizedUrl(currentLang, "/getting-around/")}>{t("nav.transport")}</a></li>
+          <li><a href={getLocalizedUrl(currentLang, "/tours/#safari")}>{t("btn.filter_safari")}</a></li>
+          <li><a href={getLocalizedUrl(currentLang, "/tours/#culture")}>{t("btn.filter_culture")}</a></li>
         </ul>
       </div>
 
       <!-- Col 3: Regional Corridors -->
       <div>
-        <div class="footer-heading">Island Corridors</div>
+        <div class="footer-heading">{t("footer.regions")}</div>
         <ul class="footer-links">
           {regions.map((reg) => (
             <li>
-              <a href={`/${reg.slug}/`}>
+              <a href={getLocalizedUrl(currentLang, `/${reg.slug}/`)}>
                 {reg.name}
               </a>
             </li>
@@ -60,15 +71,15 @@ const { site, regions } = siteData;
 
       <!-- Col 4: Insider Intelligence & Dispatch -->
       <div>
-        <div class="footer-heading">Travel Guides &amp; Desk</div>
+        <div class="footer-heading">{t("nav.guides")}</div>
         <ul class="footer-links">
-          <li><a href="/travel-guide/">Travel Guides &amp; Tips</a></li>
-          <li><a href="/getting-around/#pricing">Route Pricing Ledger</a></li>
-          <li><a href="/contact/">Contact Dispatch Desk</a></li>
-          <li><a href="/affiliate-disclosure/">Affiliate Disclosure</a></li>
+          <li><a href={getLocalizedUrl(currentLang, "/travel-guide/")}>{t("nav.guides")}</a></li>
+          <li><a href={getLocalizedUrl(currentLang, "/getting-around/#pricing")}>{t("btn.calc_driver")}</a></li>
+          <li><a href={getLocalizedUrl(currentLang, "/contact/")}>{t("nav.contact")}</a></li>
+          <li><a href={getLocalizedUrl(currentLang, "/affiliate-disclosure/")}>{t("footer.disclosure")}</a></li>
           <li style="margin-top:0.75rem;">
             <a
-              href={`https://www.getyourguide.com/contact/?partner_id=${site.partnerId}&utm_medium=online_publisher&cmp=${site.campaignPrefix}_footer_help`}
+              href={`https://www.getyourguide.com/contact/?partner_id=${site.partnerId}&utm_medium=online_publisher&cmp=${site.campaignPrefix}_footer_help_${currentLang}${localeQuery}`}
               target="_blank"
               rel="noopener noreferrer"
               style="display:inline-flex;align-items:center;gap:0.4rem;color:#F3B755;font-weight:600;"

@@ -1,23 +1,29 @@
 ---
+import LanguagePicker from "./LanguagePicker.astro";
+import { type SupportedLanguage, defaultLang, getLocalizedUrl } from "../i18n/languages";
+import { useTranslations } from "../i18n/ui";
+
 interface Props {
   currentPath?: string;
+  currentLang?: SupportedLanguage;
 }
 
-const { currentPath = "/" } = Astro.props;
+const { currentPath = "/", currentLang = defaultLang } = Astro.props;
+const t = useTranslations(currentLang);
 
 const navItems = [
-  { name: "Tours", href: "/tours/" },
-  { name: "Things to Do", href: "/destinations/" },
-  { name: "Where to Stay", href: "/where-to-stay/" },
-  { name: "Getting Around", href: "/getting-around/" },
-  { name: "Travel Guide", href: "/travel-guide/" },
+  { name: t("nav.tours"), href: getLocalizedUrl(currentLang, "/tours/") },
+  { name: t("nav.destinations"), href: getLocalizedUrl(currentLang, "/destinations/") },
+  { name: t("nav.stay"), href: getLocalizedUrl(currentLang, "/where-to-stay/") },
+  { name: t("nav.transport"), href: getLocalizedUrl(currentLang, "/getting-around/") },
+  { name: t("nav.guides"), href: getLocalizedUrl(currentLang, "/travel-guide/") },
 ];
 ---
 
 <header class="site-header" id="site-header" data-ui>
   <div class="container header-container">
     <!-- Brand Logo Tile (Matching Target Header Image) -->
-    <a href="/" class="brand-link" aria-label="LankaWayfinder.tours Home">
+    <a href={getLocalizedUrl(currentLang, "/")} class="brand-link" aria-label="LankaWayfinder.tours Home">
       <div class="brand-icon" aria-hidden="true">
         <!-- Elegant Compass / Island motif -->
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -45,10 +51,12 @@ const navItems = [
       })}
     </nav>
 
-    <!-- Header Actions (Amber Pill CTA Button + Mobile Toggle) -->
+    <!-- Header Actions (Language Picker + Amber Pill CTA Button + Mobile Toggle) -->
     <div class="header-actions">
-      <a href="/tours/" class="btn btn--sm btn--amber">
-        Book a Tour
+      <LanguagePicker currentLang={currentLang} currentPath={currentPath} />
+
+      <a href={getLocalizedUrl(currentLang, "/tours/")} class="btn btn--sm btn--amber">
+        {t("nav.cta")}
       </a>
 
       <button
@@ -88,14 +96,18 @@ const navItems = [
         );
       })}
       <li>
-        <a href="/contact/" class="mobile-nav-link">
-          Contact &amp; Support
+        <a href={getLocalizedUrl(currentLang, "/contact/")} class="mobile-nav-link">
+          {t("nav.contact")}
         </a>
       </li>
     </ul>
 
-    <a href="/tours/" class="btn btn--amber btn--block">
-      Book a Tour
+    <div style="margin-bottom:1rem;">
+      <LanguagePicker currentLang={currentLang} currentPath={currentPath} isMobile={true} />
+    </div>
+
+    <a href={getLocalizedUrl(currentLang, "/tours/")} class="btn btn--amber btn--block">
+      {t("nav.cta")}
     </a>
   </div>
 </header>

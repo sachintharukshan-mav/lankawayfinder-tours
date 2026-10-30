@@ -56,8 +56,10 @@ function getTripUrl(stay: typeof stays[0]) {
               "itemListElement": stays.map((stay, idx) => ({
                 "@type": "ListItem",
                 "position": idx + 1,
+                "url": `https://lankawayfinder.tours/where-to-stay/#${stay.id}`,
                 "item": {
                   "@type": "Hotel",
+                  "@id": `https://lankawayfinder.tours/where-to-stay/#${stay.id}`,
                   "name": stay.name,
                   "description": stay.description,
                   "image": stay.image,
@@ -67,7 +69,7 @@ function getTripUrl(stay: typeof stays[0]) {
                     "addressRegion": stay.region,
                     "addressCountry": "LK"
                   },
-                  "url": getTripUrl(stay)
+                  "url": `https://lankawayfinder.tours/where-to-stay/#${stay.id}`
                 }
               }))
             }
@@ -84,7 +86,7 @@ function getTripUrl(stay: typeof stays[0]) {
         {stays.map((stay) => {
           const tripUrl = getTripUrl(stay);
           return (
-            <article class="stay-card">
+            <article class="stay-card" id={stay.id}>
               <!-- Stay Image -->
               <a
                 href={tripUrl}
@@ -161,6 +163,41 @@ function getTripUrl(stay: typeof stays[0]) {
           );
         })}
       </div>
+
+      <!-- Quick Comparison Matrix for AI & Travelers -->
+      <details style="margin-top:2.5rem;background:#FFFFFF;border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:1.25rem 1.5rem;">
+        <summary style="font-weight:700;font-size:1.05rem;color:var(--ink-primary);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          <span>2026 Curated Sri Lanka Boutique Stays Comparison Matrix ({stays.length} Properties)</span>
+          <span style="color:var(--accent-amber);font-size:0.875rem;font-weight:600;">View Table ▾</span>
+        </summary>
+        <div tabindex="0" role="region" aria-labelledby="stays-matrix-caption" class="pricing-table-container" style="margin-top:1.25rem;overflow-x:auto;">
+          <table class="pricing-table">
+            <caption id="stays-matrix-caption" class="sr-only">Comparison of 8 verified Sri Lanka boutique lodges, tea bungalows, and heritage hotels</caption>
+            <thead>
+              <tr>
+                <th scope="col">Property Name</th>
+                <th scope="col">Region / Corridor</th>
+                <th scope="col">Category</th>
+                <th scope="col">Price Tier</th>
+                <th scope="col">Key Highlights</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stays.map((stay) => (
+                <tr>
+                  <th scope="row" style="font-weight:700;color:var(--ink-primary);text-align:left;">
+                    <a href={`#${stay.id}`} style="color:var(--ink-primary);text-decoration:underline;">{stay.name}</a>
+                  </th>
+                  <td>{stay.region}</td>
+                  <td>{stay.category}</td>
+                  <td style="font-weight:700;color:#B26A06;">{stay.priceTier}</td>
+                  <td style="font-size:0.875rem;color:var(--ink-muted);">{stay.highlights.join(" • ")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
 
       <!-- Editorial Note -->
       <div style="margin-top:3.5rem;background:#FFFFFF;border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:2rem;text-align:center;max-width:820px;margin-left:auto;margin-right:auto;" data-ui>

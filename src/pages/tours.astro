@@ -33,22 +33,38 @@ const categories = [
           Every experience in our collection has been independently vetted for route feasibility, tracker quality, and reliable booking. Book online with instant confirmation and 24-hour free cancellation.
         </p>
 
-        <!-- JSON-LD BreadcrumbList Schema -->
+        <!-- JSON-LD BreadcrumbList & ItemList Schema -->
         <script type="application/ld+json" set:html={JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [
+          "@graph": [
             {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": "https://lankawayfinder.tours/"
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://lankawayfinder.tours/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Tours & Safaris",
+                  "item": "https://lankawayfinder.tours/tours/"
+                }
+              ]
             },
             {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Tours & Safaris",
-              "item": "https://lankawayfinder.tours/tours/"
+              "@type": "ItemList",
+              "name": "10 Best Verified Sri Lanka Wildlife Safaris & Day Tours (2026)",
+              "description": "Independently vetted 4x4 wildlife safaris in Yala, Udawalawe, and Minneriya, scenic highland rail tours, and UNESCO heritage walks.",
+              "numberOfItems": sortedTours.length,
+              "itemListElement": sortedTours.map((tour, idx) => ({
+                "@type": "ListItem",
+                "position": idx + 1,
+                "url": `https://lankawayfinder.tours/tours/#${tour.id}`,
+                "name": tour.title
+              }))
             }
           ]
         })} />
@@ -90,6 +106,43 @@ const categories = [
           );
         })}
       </div>
+
+      <!-- Complete 2026 Tours & Safaris Comparison Table for AI & Quick Scanning -->
+      <details style="margin-top:2.5rem;background:#FFFFFF;border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:1.25rem 1.5rem;">
+        <summary style="font-weight:700;font-size:1.05rem;color:var(--ink-primary);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          <span>2026 Sri Lanka Safaris &amp; Day Tours Side-by-Side Comparison Ledger ({sortedTours.length} Experiences)</span>
+          <span style="color:var(--accent-amber);font-size:0.875rem;font-weight:600;">View Full Table ▾</span>
+        </summary>
+        <div tabindex="0" role="region" aria-labelledby="tours-ledger-caption" class="pricing-table-container" style="margin-top:1.25rem;overflow-x:auto;">
+          <table class="pricing-table">
+            <caption id="tours-ledger-caption" class="sr-only">Side-by-side comparison of 10 verified Sri Lanka tours, safaris, ratings, durations, and starting prices</caption>
+            <thead>
+              <tr>
+                <th scope="col">Experience / Tour Title</th>
+                <th scope="col">Corridor</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Starting Price</th>
+                <th scope="col">Chauffeur / Permit Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedTours.map((tour) => (
+                <tr>
+                  <th scope="row" style="font-weight:700;color:var(--ink-primary);text-align:left;">
+                    <a href={`#${tour.id}`} style="color:var(--ink-primary);text-decoration:underline;">{tour.title}</a>
+                  </th>
+                  <td>{tour.region}</td>
+                  <td>{tour.durationShort || tour.duration.replace("DURATION: ", "")}</td>
+                  <td style="white-space:nowrap;"><strong>{tour.ratingScore.toFixed(2)}/5</strong> ({tour.reviewCount.toLocaleString()})</td>
+                  <td style="font-weight:700;color:#B26A06;white-space:nowrap;">{tour.price.replace("FROM ", "")}</td>
+                  <td style="font-size:0.875rem;color:var(--ink-muted);">{tour.chauffeurNote}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -163,12 +216,18 @@ const categories = [
     tourItems.forEach((item) => {
       const cat = item.getAttribute("data-cat");
       if (filter === "all" || cat === filter) {
-        (item as HTMLElement).style.display = "block";
+        item.removeAttribute("hidden");
       } else {
-        (item as HTMLElement).style.display = "none";
+        item.setAttribute("hidden", "until-found");
       }
     });
   }
+
+  // Reveal all tours if a user searches for a hidden tour via Find-in-Page
+  const toursGrid = document.getElementById("tours-grid");
+  toursGrid?.addEventListener("beforematch", () => {
+    applyFilter("all");
+  });
 
   filterBtns.forEach((btn) => {
     btn.addEventListener("click", () => {

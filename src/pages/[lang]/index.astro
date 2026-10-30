@@ -1,0 +1,331 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TourCard from "../../components/TourCard.astro";
+import siteData from "../../data/sites/lankawayfinder.json";
+import { nonDefaultLanguages, type SupportedLanguage, getLocalizedUrl } from "../../i18n/languages";
+import { homeContent } from "../../i18n/content";
+import { useTranslations } from "../../i18n/ui";
+
+export function getStaticPaths() {
+  return nonDefaultLanguages.map((lang) => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params as { lang: SupportedLanguage };
+const t = useTranslations(lang);
+const content = homeContent[lang] || homeContent.en;
+
+const { site, regions, tours, stays, guides } = siteData;
+
+const featuredTours = [...tours]
+  .sort((a, b) => b.ratingScore - a.ratingScore)
+  .slice(0, 4);
+
+const featuredStays = stays.slice(0, 4);
+
+function getTripUrl(stay: typeof stays[0]) {
+  if (stay.hotelId) {
+    return `https://www.trip.com/hotels/detail/?hotelId=${stay.hotelId}&Allianceid=${site.tripAllianceId || "11096275"}&SID=${site.tripSid || "334154717"}&trip_sub1=&trip_sub3=${site.tripSub3 || "D20421816"}`;
+  }
+  return stay.tripUrl;
+}
+
+const featuredGuides = guides.slice(0, 3);
+
+const faqs = [
+  {
+    q: "How does the chauffeur and safari jeep handover work?",
+    a: "Your private chauffeur picks you up from your hotel in an air-conditioned sedan or van. At the national park perimeter, you transfer directly into your reserved 4x4 safari cruiser. While you are inside the park, your private driver remains parked outside with your luggage locked securely inside the vehicle. When the safari finishes, your chauffeur meets you with cold refreshments and continues your highway journey."
+  },
+  {
+    q: "Why do some Yala bookings cost $28 while others cost $84?",
+    a: "The $28 packages cover the private 4x4 jeep, fuel, and local tracker only; government Department of Wildlife Conservation (DWC) entrance permits (~$38 to $43 USD per foreign adult) must be purchased separately at the gate window. The $84 all-inclusive packages include pre-cleared barcoded entry permits, allowing your vehicle to bypass the morning ticket counter line when the park opens at 06:00 AM."
+  },
+  {
+    q: "Can I do Udawalawe Safari as a stopover between Ella and the south coast?",
+    a: "Yes, this is the most efficient travel route in Sri Lanka. Driving from Ella to Mirissa, Weligama, or Tangalle passes directly through Udawalawe town. You switch to a 3.5-hour private elephant safari at 09:00 AM or 02:00 PM, and your chauffeur transfers you to your beach resort before dusk."
+  },
+  {
+    q: "What is the best way to secure reserved seats on the Kandy to Ella train?",
+    a: "Sri Lanka Railways reserved train tickets sell out within minutes of release 30 days prior. We recommend booking a hybrid transfer package that guarantees reserved 2nd or 3rd class observation seats from Nanu Oya to Ella, while your private chauffeur handles the steep mountain road luggage transport."
+  },
+  {
+    q: "Are the safari jeeps private or shared with other tourists?",
+    a: "All 4x4 safari experiences mapped on this site are private bookings for your party only. You have exclusive use of the modified Toyota Hilux or Land Cruiser, private tracker, and open-top viewing hatches."
+  }
+];
+---
+
+<BaseLayout
+  title={content.metaTitle}
+  description={content.metaDesc}
+  currentPath={`/${lang}/`}
+  lang={lang}
+>
+  <!-- Hero Section -->
+  <section class="hero-video-stage">
+    <video
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="auto"
+      poster="/videos/hero-backdrop-poster.jpg"
+      class="hero-video"
+    >
+      <source src="/videos/hero-backdrop.webm" type="video/webm" />
+    </video>
+
+    <div class="hero-scrim"></div>
+
+    <div class="container hero-stage-content animate-enter">
+      <div style="max-width:860px;margin:0 auto;text-align:center;">
+        <h1 class="hero-stage-title hero-reveal-1">
+          {content.heroTitle}
+        </h1>
+
+        <p class="hero-stage-lead hero-reveal-2">
+          {content.heroSubtitle}
+        </p>
+
+        <div class="hero-reveal-3" style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-bottom:3rem;">
+          <a href="#tours" class="btn btn--lg btn--amber">
+            <span>{t("btn.view_all_tours")}</span>
+            <span>→</span>
+          </a>
+          <a href={getLocalizedUrl(lang, "/getting-around/")} class="btn btn--lg btn--ghost-white">
+            <span>{t("nav.transport")}</span>
+          </a>
+        </div>
+
+        <div class="hero-stage-trust hero-reveal-4">
+          <div style="display:flex;align-items:center;gap:0.4rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#DC8B19" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span style="color:#DC8B19;font-weight:700;">4.92 / 5.0</span>
+            <span style="color:var(--ink-muted);">(16,000+ reviews)</span>
+          </div>
+          <span style="color:rgba(22, 37, 43, 0.2);">•</span>
+          <div style="display:flex;align-items:center;gap:0.4rem;font-weight:600;color:var(--ink-primary);">
+            <span>GetYourGuide Partner</span>
+          </div>
+          <span style="color:rgba(22, 37, 43, 0.2);">•</span>
+          <div style="color:var(--ink-muted);">
+            <span>{t("badge.free_cancel")}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Editorial Story -->
+  <section class="section section--white">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Why Sri Lanka?</h2>
+        <p class="section-subtitle" style="max-width:720px;margin:0 auto;">
+          From tracking elusive leopards through Yala's coastal sand dunes to watching hundreds of wild Asian elephants gather along Minneriya's ancient reservoir beds, Sri Lanka packs exceptional biodiversity, culture, and dramatic landscapes per square mile.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="stat-pillar-card" style="background:var(--bg-page);border-radius:var(--radius-lg);padding:2.25rem;border:1px solid var(--border-subtle);">
+          <div style="font-family:var(--font-serif);font-size:2.5rem;font-weight:700;color:var(--accent-amber);line-height:1;margin-bottom:0.75rem;">
+            <span class="stat-number">26</span>
+          </div>
+          <h3 style="font-size:1.25rem;margin-bottom:0.6rem;">National Parks</h3>
+          <p style="font-size:0.9375rem;color:var(--ink-body);line-height:1.6;margin:0;">
+            Boasting the highest density of wild Asian elephants and Sri Lankan leopards globally, alongside endemic sloth bears, mugger crocodiles, and ocean blue whales.
+          </p>
+        </div>
+
+        <div class="stat-pillar-card" style="background:var(--bg-page);border-radius:var(--radius-lg);padding:2.25rem;border:1px solid var(--border-subtle);">
+          <div style="font-family:var(--font-serif);font-size:2.5rem;font-weight:700;color:var(--accent-amber);line-height:1;margin-bottom:0.75rem;">
+            <span class="stat-number">8</span>
+          </div>
+          <h3 style="font-size:1.25rem;margin-bottom:0.6rem;">UNESCO World Heritage Sites</h3>
+          <p style="font-size:0.9375rem;color:var(--ink-body);line-height:1.6;margin:0;">
+            Over 2,500 years of civilization: 5th-century granite sky citadels at Sigiriya, golden cave monasteries at Dambulla, and 17th-century Dutch maritime ramparts at Galle.
+          </p>
+        </div>
+
+        <div class="stat-pillar-card" style="background:var(--bg-page);border-radius:var(--radius-lg);padding:2.25rem;border:1px solid var(--border-subtle);">
+          <div style="font-family:var(--font-serif);font-size:2.5rem;font-weight:700;color:var(--accent-amber);line-height:1;margin-bottom:0.75rem;">
+            <span class="stat-number">100%</span>
+          </div>
+          <h3 style="font-size:1.25rem;margin-bottom:0.6rem;">Verified Operations</h3>
+          <p style="font-size:0.9375rem;color:var(--ink-body);line-height:1.6;margin:0;">
+            Every single safari jeep, mountain train connection, and air-conditioned private vehicle vetted for safety, certified licensing, and transparent pricing.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Experiences Showcase -->
+  <section class="section section--cream" id="tours">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pill">{t("badge.verified")}</span>
+        <h2 class="section-title">{content.secondaryTitle || "Verified Field Inventory"}</h2>
+        <p class="section-subtitle">
+          {content.secondarySubtitle || "Every safari jeep, scenic rail route, and cultural trek independently vetted for quality and safety."}
+        </p>
+      </div>
+
+      <div class="grid-2">
+        {featuredTours.map((tour) => (
+          <TourCard tour={tour} lang={lang} />
+        ))}
+      </div>
+
+      <div style="text-align:center;margin-top:2.5rem;">
+        <a href={getLocalizedUrl(lang, "/tours/")} class="btn btn--amber">
+          <span>{t("btn.view_all_tours")}</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Regional Corridors Grid -->
+  <section class="section section--white">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pill">{t("footer.regions")}</span>
+        <h2 class="section-title">5 Core Travel Corridors</h2>
+        <p class="section-subtitle">
+          Realistic drive times, expressway connections, and safari gate locations.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        {regions.map((region) => (
+          <a href={getLocalizedUrl(lang, `/${region.slug}/`)} class="corridor-card" aria-label={region.name}>
+            <img src={region.image} alt={region.name} class="corridor-card__bg" loading="lazy" />
+            <div class="corridor-card__overlay"></div>
+            <div class="corridor-card__content">
+              <h3 class="corridor-card__title">{region.name}</h3>
+              <p class="corridor-card__tagline">{region.tagline}</p>
+              <span class="corridor-card__cta">
+                <span>View Route Guide</span>
+                <span>→</span>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Hand-Picked Stays -->
+  <section class="section section--cream">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pill">{t("nav.stay")}</span>
+        <h2 class="section-title">Boutique Lodges &amp; Stays</h2>
+        <p class="section-subtitle">
+          Hand-picked safari lodges, tea plantation bungalows, and heritage beach villas.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        {featuredStays.map((stay) => (
+          <article class="stay-card" data-ui>
+            <div class="stay-card__image-wrap">
+              <img src={stay.image} alt={stay.name} class="stay-card__image" loading="lazy" />
+              <span class="stay-card__badge">{stay.badge}</span>
+            </div>
+            <div class="stay-card__body">
+              <div class="stay-card__meta">
+                <span class="stay-card__location">{stay.region}</span>
+                <span class="stay-card__rating">★ {stay.ratingScore} ({stay.reviewCount})</span>
+              </div>
+              <h3 class="stay-card__title">{stay.name}</h3>
+              <p class="stay-card__desc">{stay.overview}</p>
+              <div class="stay-card__footer">
+                <div class="stay-card__price">
+                  <span class="stay-card__from">{t("tour.from")}</span>
+                  <span class="stay-card__amount">{stay.pricePerNight}</span>
+                  <span class="stay-card__unit">/ night</span>
+                </div>
+                <a
+                  href={getTripUrl(stay)}
+                  class="btn btn--sm btn--primary"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>{t("btn.check_avail")}</span>
+                  <span>↗</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Route Guides -->
+  <section class="section section--white">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-pill">{t("nav.guides")}</span>
+        <h2 class="section-title">Field Guides &amp; Tariffs</h2>
+        <p class="section-subtitle">
+          Empirical advice on park fees, train tickets, and private driver costs.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        {featuredGuides.map((guide) => (
+          <article class="guide-card" data-ui>
+            <span class="guide-card__cat">{guide.category}</span>
+            <h3 class="guide-card__title">
+              <a href={getLocalizedUrl(lang, `/travel-guide/${guide.slug}/`)}>
+                {guide.title}
+              </a>
+            </h3>
+            <p class="guide-card__summary">{guide.summary}</p>
+            <div class="guide-card__footer">
+              <span class="guide-card__read">{guide.readTime}</span>
+              <a href={getLocalizedUrl(lang, `/travel-guide/${guide.slug}/`)} class="guide-card__link">
+                <span>Read Dossier</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="section section--cream">
+    <div class="container" style="max-width:860px;">
+      <div class="section-header">
+        <span class="section-pill">Field Logistics</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">
+          Everything you need to know about national park permits, chauffeurs, and train tickets.
+        </p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:1.25rem;">
+        {faqs.map((faq, idx) => (
+          <details style="background:var(--bg-surface-raised);border-radius:var(--radius);border:1px solid var(--border-subtle);padding:1.25rem 1.5rem;" open={idx === 0}>
+            <summary style="font-weight:700;font-size:1.0625rem;color:var(--ink-primary);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+              <span>{faq.q}</span>
+              <span style="color:var(--accent-amber);font-size:1.25rem;font-weight:bold;">+</span>
+            </summary>
+            <p style="margin-top:0.85rem;color:var(--ink-body);font-size:0.9375rem;line-height:1.65;">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

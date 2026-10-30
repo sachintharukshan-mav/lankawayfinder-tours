@@ -48,22 +48,45 @@ const regionHighlights: Record<string, string[]> = {
           Sri Lanka's compact geography lets you journey from arid wildlife savannahs to mist-shrouded mountain peaks and tropical coral coastlines in just a few hours. Explore each regional corridor below.
         </p>
 
-        <!-- JSON-LD BreadcrumbList Schema -->
+        <!-- JSON-LD BreadcrumbList & ItemList Schema -->
         <script type="application/ld+json" set:html={JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [
+          "@graph": [
             {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": "https://lankawayfinder.tours/"
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://lankawayfinder.tours/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Things to Do",
+                  "item": "https://lankawayfinder.tours/destinations/"
+                }
+              ]
             },
             {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Things to Do",
-              "item": "https://lankawayfinder.tours/destinations/"
+              "@type": "ItemList",
+              "name": "Top 5 Regional Travel Corridors in Sri Lanka (2026)",
+              "description": "Sri Lanka's primary safari, cultural triangle, highland tea rail, and southern coast corridors.",
+              "numberOfItems": regions.length,
+              "itemListElement": regions.map((region, idx) => ({
+                "@type": "ListItem",
+                "position": idx + 1,
+                "url": `https://lankawayfinder.tours/${region.slug}/`,
+                "item": {
+                  "@type": "TouristDestination",
+                  "@id": `https://lankawayfinder.tours/${region.slug}/#destination`,
+                  "name": region.name,
+                  "description": region.description,
+                  "image": region.image,
+                  "url": `https://lankawayfinder.tours/${region.slug}/`
+                }
+              }))
             }
           ]
         })} />
@@ -137,6 +160,41 @@ const regionHighlights: Record<string, string[]> = {
           );
         })}
       </div>
+
+      <!-- 2026 Regional Corridors Quick Comparison Table -->
+      <details style="margin-top:3rem;background:#FFFFFF;border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:1.25rem 1.5rem;">
+        <summary style="font-weight:700;font-size:1.05rem;color:var(--ink-primary);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          <span>2026 Sri Lanka Regional Corridors Logistics &amp; Gate Matrix</span>
+          <span style="color:var(--accent-amber);font-size:0.875rem;font-weight:600;">View Table ▾</span>
+        </summary>
+        <div tabindex="0" role="region" aria-labelledby="corridors-matrix-caption" class="pricing-table-container" style="margin-top:1.25rem;overflow-x:auto;">
+          <table class="pricing-table">
+            <caption id="corridors-matrix-caption" class="sr-only">Sri Lanka regional travel corridors comparison with optimal entry hours, access gates, and transfer logistics</caption>
+            <thead>
+              <tr>
+                <th scope="col">Regional Corridor</th>
+                <th scope="col">Focus</th>
+                <th scope="col">Optimal Gate Hours</th>
+                <th scope="col">Primary Access Gates</th>
+                <th scope="col">Transfer &amp; Luggage Protocol</th>
+              </tr>
+            </thead>
+            <tbody>
+              {regions.map((region) => (
+                <tr>
+                  <th scope="row" style="font-weight:700;color:var(--ink-primary);text-align:left;">
+                    <a href={`/${region.slug}/`} style="color:var(--ink-primary);text-decoration:underline;">{region.name}</a>
+                  </th>
+                  <td>{region.tagline}</td>
+                  <td style="white-space:nowrap;">{region.bestTime}</td>
+                  <td style="font-size:0.875rem;">{region.keyGates}</td>
+                  <td style="font-size:0.875rem;color:var(--ink-muted);">{region.transferNote}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </div>
   </section>
 </BaseLayout>
